@@ -33,7 +33,7 @@ spring:
             multi-statement-allow: true
   # redis 配置
   redis:
-    host: 47.103.3.240
+    host: localhost
     port: 6379
     timeout: 6s #连接池超时时长
     lettuce:
@@ -42,7 +42,7 @@ spring:
         max-wait: -1ms #连接池最大阻塞等待时间
         max-idle: 10 #连接池最大空闲连接
         min-idle: 5 #连接池最小空闲连接
-    password: czcwr1314
+    password: 5202401314
   # elasticsearch配置
   data:
     elasticsearch:

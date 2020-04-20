@@ -3,7 +3,7 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     driverClassName: com.mysql.cj.jdbc.Driver
     druid:
-      url: jdbc:mysql://localhost:3306/dbblog?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT
+      url: jdbc:mysql://localhost:3306/dbblog?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT&allowPublicKeyRetrieval=true
       username: root
       password: root
       initial-size: 10
@@ -54,6 +54,7 @@ spring:
     port: 5672
     username: guest
     password: guest
+
 #mybatis-plus
 mybatis-plus:
   global-config:
@@ -70,3 +71,9 @@ oss:
 jasypt:
   encryptor:
     password: dbblog-jasypt
+
+github:
+  client_id: b4528a12106905730b73
+  client_secret: 55f9c7b667a0b1a84a16df2682b01f4c4a97133a
+
+

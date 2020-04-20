@@ -30,7 +30,7 @@ spring:
     #restFul风格：当找不到页面时，正常抛出错误，不跳转页面
     throw-exception-if-no-handler-found: true
     #仅映射static资源文件
-    static-path-pattern: /static/**
+#    static-path-pattern: /static/**
   resources:
     #restFul风格: 不要为资源文件建立映射
     add-mappings: false

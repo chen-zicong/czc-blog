@@ -1,5 +1,7 @@
 package cn.dblearn.blog.entity.mall.vo;
 
+import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 
 /**
@@ -7,17 +9,45 @@ import java.io.Serializable;
  */
 public class NewBeeMallIndexConfigGoodsVO implements Serializable {
 
+    /**
+     * 商品表主键id
+     */
+    @ApiModelProperty(value="商品表主键id")
     private Long goodsId;
 
+    /**
+     * 商品名
+     */
+    @ApiModelProperty(value="商品名")
     private String goodsName;
 
+    /**
+     * 商品简介
+     */
+    @ApiModelProperty(value="商品简介")
     private String goodsIntro;
 
+
+    /**
+     * 商品主图
+     */
+    @ApiModelProperty(value="商品主图")
     private String goodsCoverImg;
 
+
+
+    /**
+     * 商品实际售价
+     */
+    @ApiModelProperty(value="商品实际售价")
     private Integer sellingPrice;
 
+    /**
+     * 商品标签
+     */
+    @ApiModelProperty(value="商品标签")
     private String tag;
+
 
     public Long getGoodsId() {
         return goodsId;

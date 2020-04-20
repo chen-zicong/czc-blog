@@ -1,21 +1,42 @@
 package cn.dblearn.blog.entity.mall.vo;
 
+import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 
 /**
  * 订单详情页页面订单项VO
  */
 public class NewBeeMallOrderItemVO implements Serializable {
-
+    /**
+     * 关联商品id
+     */
+    @ApiModelProperty(value="关联商品id")
     private Long goodsId;
 
-    private Integer goodsCount;
-
+    /**
+     * 下单时商品的名称(订单快照)
+     */
+    @ApiModelProperty(value="下单时商品的名称(订单快照)")
     private String goodsName;
 
+    /**
+     * 下单时商品的主图(订单快照)
+     */
+    @ApiModelProperty(value="下单时商品的主图(订单快照)")
     private String goodsCoverImg;
 
+    /**
+     * 下单时商品的价格(订单快照)
+     */
+    @ApiModelProperty(value="下单时商品的价格(订单快照)")
     private Integer sellingPrice;
+
+    /**
+     * 数量(订单快照)
+     */
+    @ApiModelProperty(value="数量(订单快照)")
+    private Integer goodsCount;
 
     public Long getGoodsId() {
         return goodsId;

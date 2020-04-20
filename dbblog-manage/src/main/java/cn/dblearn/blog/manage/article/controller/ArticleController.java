@@ -61,11 +61,12 @@ public class ArticleController {
     }
 
     @PostMapping("/save")
-    @RequiresPermissions("article:save")
+    //@RequiresPermissions("article:save")
     @CacheEvict(allEntries = true)
     @RefreshEsMqSender(sender = "dbblog-manage-saveArticle")
     public Result saveArticle(@RequestBody ArticleDTO article){
         ValidatorUtils.validateEntity(article);
+        article.setPublish(true);
         articleService.saveArticle(article);
         return Result.ok();
     }

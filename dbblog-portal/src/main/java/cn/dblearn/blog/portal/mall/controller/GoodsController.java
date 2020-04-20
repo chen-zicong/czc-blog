@@ -6,6 +6,8 @@ import cn.dblearn.blog.common.mall.NewBeeMallException;
 import cn.dblearn.blog.common.mall.ServiceResultEnum;
 import cn.dblearn.blog.common.util.util.BeanUtil;
 import cn.dblearn.blog.common.util.util.PageQueryUtil;
+import cn.dblearn.blog.common.util.util.Result;
+import cn.dblearn.blog.common.util.util.ResultGenerator;
 import cn.dblearn.blog.entity.mall.NewBeeMallGoods;
 import cn.dblearn.blog.entity.mall.vo.NewBeeMallGoodsDetailVO;
 import cn.dblearn.blog.entity.mall.vo.SearchPageCategoryVO;
@@ -62,9 +64,9 @@ public class GoodsController {
     }
 
     @GetMapping("/goods/detail/{goodsId}")
-    public String detailPage(@PathVariable("goodsId") Long goodsId, HttpServletRequest request) {
+    public Result<NewBeeMallGoodsDetailVO> detailPage(@PathVariable("goodsId") Long goodsId, HttpServletRequest request) {
         if (goodsId < 1) {
-            return "error/error_5xx";
+           return ResultGenerator.genFailResult("无数据");
         }
         NewBeeMallGoods goods = newBeeMallGoodsService.getNewBeeMallGoodsById(goodsId);
         if (goods == null) {
@@ -76,8 +78,8 @@ public class GoodsController {
         NewBeeMallGoodsDetailVO goodsDetailVO = new NewBeeMallGoodsDetailVO();
         BeanUtil.copyProperties(goods, goodsDetailVO);
         goodsDetailVO.setGoodsCarouselList(goods.getGoodsCarousel().split(","));
-        request.setAttribute("goodsDetail", goodsDetailVO);
-        return "mall/detail";
+
+        return ResultGenerator.genSuccessResult(goodsDetailVO);
     }
 
 }

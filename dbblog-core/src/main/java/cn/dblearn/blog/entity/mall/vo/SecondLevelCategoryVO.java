@@ -1,5 +1,7 @@
 package cn.dblearn.blog.entity.mall.vo;
 
+import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -8,13 +10,30 @@ import java.util.List;
  */
 public class SecondLevelCategoryVO implements Serializable {
 
+    /**
+     * 分类id
+     */
+    @ApiModelProperty(value="分类id")
     private Long categoryId;
 
-    private Long parentId;
-
+    /**
+     * 分类级别(1-一级分类 2-二级分类 3-三级分类)
+     */
+    @ApiModelProperty(value="分类级别(1-一级分类 2-二级分类 3-三级分类)")
     private Byte categoryLevel;
 
+    /**
+     * 分类名称
+     */
+    @ApiModelProperty(value="分类名称")
     private String categoryName;
+
+    /**
+     * 父分类id
+     */
+    @ApiModelProperty(value="父分类id")
+    private Long parentId;
+
 
     private List<ThirdLevelCategoryVO> thirdLevelCategoryVOS;
 

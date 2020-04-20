@@ -22,15 +22,15 @@ public class ResultGenerator {
         result.setMessage(DEFAULT_SUCCESS_MESSAGE);
         return result;
     }
+//
+//    public static Result genSuccessResult(String message) {
+//        Result result = new Result();
+//        result.setResultCode(RESULT_CODE_SUCCESS);
+//        result.setMessage(message);
+//        return result;
+//    }
 
-    public static Result genSuccessResult(String message) {
-        Result result = new Result();
-        result.setResultCode(RESULT_CODE_SUCCESS);
-        result.setMessage(message);
-        return result;
-    }
-
-    public static Result genSuccessResult(Object data) {
+    public static <T>Result genSuccessResult(T data) {
         Result result = new Result();
         result.setResultCode(RESULT_CODE_SUCCESS);
         result.setMessage(DEFAULT_SUCCESS_MESSAGE);

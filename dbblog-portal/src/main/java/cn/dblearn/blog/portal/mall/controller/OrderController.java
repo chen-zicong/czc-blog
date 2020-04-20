@@ -33,14 +33,14 @@ public class OrderController {
     private NewBeeMallOrderService newBeeMallOrderService;
 
     @GetMapping("/orders/{orderNo}")
-    public String orderDetailPage(HttpServletRequest request, @PathVariable("orderNo") String orderNo, HttpSession httpSession) {
+    public Result<NewBeeMallOrderDetailVO> orderDetailPage(HttpServletRequest request, @PathVariable("orderNo") String orderNo, HttpSession httpSession) {
         NewBeeMallUserVO user = (NewBeeMallUserVO) httpSession.getAttribute(Constants.MALL_USER_SESSION_KEY);
         NewBeeMallOrderDetailVO orderDetailVO = newBeeMallOrderService.getOrderDetailByOrderNo(orderNo, user.getUserId());
         if (orderDetailVO == null) {
-            return "error/error_5xx";
+           return ResultGenerator.genFailResult("不存在的订单");
         }
         request.setAttribute("orderDetailVO", orderDetailVO);
-        return "mall/order-detail";
+        return ResultGenerator.genSuccessResult(orderDetailVO);
     }
 
     @GetMapping("/orders")
@@ -59,7 +59,7 @@ public class OrderController {
     }
 
     @GetMapping("/saveOrder")
-    public String saveOrder(HttpSession httpSession) {
+    public Result<String> saveOrder(HttpSession httpSession) {
         NewBeeMallUserVO user = (NewBeeMallUserVO) httpSession.getAttribute(Constants.MALL_USER_SESSION_KEY);
         List<NewBeeMallShoppingCartItemVO> myShoppingCartItems = newBeeMallShoppingCartService.getMyShoppingCartItems(user.getUserId());
         if (StringUtils.isEmpty(user.getAddress().trim())) {
@@ -73,7 +73,7 @@ public class OrderController {
         //保存订单并返回订单号
         String saveOrderResult = newBeeMallOrderService.saveOrder(user, myShoppingCartItems);
         //跳转到订单详情页
-        return "redirect:/orders/" + saveOrderResult;
+        return ResultGenerator.genSuccessResult(saveOrderResult);
     }
 
     @PutMapping("/orders/{orderNo}/cancel")

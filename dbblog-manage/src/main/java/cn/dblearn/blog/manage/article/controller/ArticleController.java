@@ -72,7 +72,7 @@ public class ArticleController {
     }
 
     @PutMapping("/update")
-    @RequiresPermissions("article:update")
+//    @RequiresPermissions("article:update")
     @CacheEvict(allEntries = true)
     @RefreshEsMqSender(sender = "dbblog-manage-updateArticle")
     public Result updateArticle(@RequestBody ArticleDTO article){
@@ -82,7 +82,7 @@ public class ArticleController {
     }
 
     @PutMapping("/update/status")
-    @RequiresPermissions("article:update")
+//    @RequiresPermissions("article:update")
     @CacheEvict(allEntries = true)
     @RefreshEsMqSender(sender = "dbblog-manage-updateStatus")
     public Result updateStatus(@RequestBody Article article) {

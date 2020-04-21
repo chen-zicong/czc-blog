@@ -7,8 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>oauth github</title>
 </head>
-<h1>WOOO</h1>
-<h1>${token}</h1>
+
 <body>
 登陆中...
 <script>

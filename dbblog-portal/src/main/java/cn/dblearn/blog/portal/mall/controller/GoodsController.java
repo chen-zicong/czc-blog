@@ -13,17 +13,21 @@ import cn.dblearn.blog.entity.mall.vo.NewBeeMallGoodsDetailVO;
 import cn.dblearn.blog.entity.mall.vo.SearchPageCategoryVO;
 import cn.dblearn.blog.portal.mall.service.NewBeeMallCategoryService;
 import cn.dblearn.blog.portal.mall.service.NewBeeMallGoodsService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 @Controller
+@Api(tags = "商品")
 public class GoodsController {
 
     @Resource
@@ -64,6 +68,8 @@ public class GoodsController {
     }
 
     @GetMapping("/goods/detail/{goodsId}")
+    @ResponseBody
+    @ApiOperation(value = "商品详情")
     public Result<NewBeeMallGoodsDetailVO> detailPage(@PathVariable("goodsId") Long goodsId, HttpServletRequest request) {
         if (goodsId < 1) {
            return ResultGenerator.genFailResult("无数据");

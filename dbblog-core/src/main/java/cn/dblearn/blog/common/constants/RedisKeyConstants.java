@@ -23,5 +23,11 @@ public class RedisKeyConstants {
     public final static String MANAGE_SYS_USER_TOKEN = "MANAGE:SYS:USER:TOKEN:";
 
 
+    /**
+     * 前台用户token key
+     */
+    public final static String USER_TOKEN = "USER:TOKEN:";
+
+
 
 }

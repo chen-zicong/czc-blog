@@ -38,4 +38,11 @@ public interface SysUserTokenService {
      * @param token
      */
     void refreshToken(Integer userId, String token);
+
+    /**
+     * 生成前台token
+     * @param userId
+     * @return
+     */
+     String createTokenForever(Long  userId);
 }

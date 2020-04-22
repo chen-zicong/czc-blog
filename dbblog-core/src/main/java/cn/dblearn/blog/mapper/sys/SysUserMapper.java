@@ -3,6 +3,7 @@ package cn.dblearn.blog.mapper.sys;
 import cn.dblearn.blog.entity.sys.SysUser;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -15,6 +16,7 @@ import java.util.List;
  * @since 2018-10-08
  */
 @Mapper
+@Repository
 public interface SysUserMapper extends BaseMapper<SysUser> {
 
     /**

@@ -13,7 +13,8 @@ import cn.dblearn.blog.entity.mall.vo.NewBeeMallShoppingCartItemVO;
 import cn.dblearn.blog.entity.mall.vo.NewBeeMallUserVO;
 import cn.dblearn.blog.portal.mall.service.NewBeeMallOrderService;
 import cn.dblearn.blog.portal.mall.service.NewBeeMallShoppingCartService;
-import org.springframework.stereotype.Controller;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,8 @@ import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Map;
 
-@Controller
+@RestController
+@Api(tags = "订单相关接口")
 public class OrderController {
 
     @Resource
@@ -33,6 +35,7 @@ public class OrderController {
     private NewBeeMallOrderService newBeeMallOrderService;
 
     @GetMapping("/orders/{orderNo}")
+    @ApiOperation("订单详情")
     public Result<NewBeeMallOrderDetailVO> orderDetailPage(HttpServletRequest request, @PathVariable("orderNo") String orderNo, HttpSession httpSession) {
         NewBeeMallUserVO user = (NewBeeMallUserVO) httpSession.getAttribute(Constants.MALL_USER_SESSION_KEY);
         NewBeeMallOrderDetailVO orderDetailVO = newBeeMallOrderService.getOrderDetailByOrderNo(orderNo, user.getUserId());
@@ -44,7 +47,8 @@ public class OrderController {
     }
 
     @GetMapping("/orders")
-    public String orderListPage(@RequestParam Map<String, Object> params, HttpServletRequest request, HttpSession httpSession) {
+    @ApiOperation("订单列表")
+    public Result orderListPage(@RequestParam Map<String, Object> params, HttpServletRequest request, HttpSession httpSession) {
         NewBeeMallUserVO user = (NewBeeMallUserVO) httpSession.getAttribute(Constants.MALL_USER_SESSION_KEY);
         params.put("userId", user.getUserId());
         if (StringUtils.isEmpty(params.get("page"))) {
@@ -55,10 +59,12 @@ public class OrderController {
         PageQueryUtil pageUtil = new PageQueryUtil(params);
         request.setAttribute("orderPageResult", newBeeMallOrderService.getMyOrders(pageUtil));
         request.setAttribute("path", "orders");
-        return "mall/my-orders";
+        return ResultGenerator.genSuccessResult(newBeeMallOrderService.getMyOrders(pageUtil));
+
     }
 
     @GetMapping("/saveOrder")
+    @ApiOperation("生成订单")
     public Result<String> saveOrder(HttpSession httpSession) {
         NewBeeMallUserVO user = (NewBeeMallUserVO) httpSession.getAttribute(Constants.MALL_USER_SESSION_KEY);
         List<NewBeeMallShoppingCartItemVO> myShoppingCartItems = newBeeMallShoppingCartService.getMyShoppingCartItems(user.getUserId());
@@ -77,7 +83,7 @@ public class OrderController {
     }
 
     @PutMapping("/orders/{orderNo}/cancel")
-    @ResponseBody
+    @ApiOperation("取消订单")
     public Result cancelOrder(@PathVariable("orderNo") String orderNo, HttpSession httpSession) {
         NewBeeMallUserVO user = (NewBeeMallUserVO) httpSession.getAttribute(Constants.MALL_USER_SESSION_KEY);
         String cancelOrderResult = newBeeMallOrderService.cancelOrder(orderNo, user.getUserId());
@@ -89,6 +95,7 @@ public class OrderController {
     }
 
     @PutMapping("/orders/{orderNo}/finish")
+    @ApiOperation("交易成功")
     @ResponseBody
     public Result finishOrder(@PathVariable("orderNo") String orderNo, HttpSession httpSession) {
         NewBeeMallUserVO user = (NewBeeMallUserVO) httpSession.getAttribute(Constants.MALL_USER_SESSION_KEY);

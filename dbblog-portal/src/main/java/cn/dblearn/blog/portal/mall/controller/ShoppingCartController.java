@@ -8,6 +8,7 @@ import cn.dblearn.blog.common.util.util.ResultGenerator;
 import cn.dblearn.blog.entity.mall.NewBeeMallShoppingCartItem;
 import cn.dblearn.blog.entity.mall.vo.NewBeeMallShoppingCartItemVO;
 import cn.dblearn.blog.entity.mall.vo.NewBeeMallUserVO;
+import cn.dblearn.blog.entity.mall.vo.ShoppingVo;
 import cn.dblearn.blog.portal.mall.service.NewBeeMallShoppingCartService;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
@@ -19,13 +20,13 @@ import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Controller
-public class ShoppingCartController {
+public class ShoppingCartController  {
 
     @Resource
     private NewBeeMallShoppingCartService newBeeMallShoppingCartService;
 
     @GetMapping("/shop-cart")
-    public String cartListPage(HttpServletRequest request,
+    public Result<ShoppingVo> cartListPage(HttpServletRequest request,
                                HttpSession httpSession) {
         NewBeeMallUserVO user = (NewBeeMallUserVO) httpSession.getAttribute(Constants.MALL_USER_SESSION_KEY);
         int itemsTotal = 0;
@@ -34,21 +35,23 @@ public class ShoppingCartController {
         if (!CollectionUtils.isEmpty(myShoppingCartItems)) {
             //购物项总数
             itemsTotal = myShoppingCartItems.stream().mapToInt(NewBeeMallShoppingCartItemVO::getGoodsCount).sum();
-            if (itemsTotal < 1) {
-                return "error/error_5xx";
-            }
+//            if (itemsTotal < 1) {
+//                return "error/error_5xx";
+//            }
             //总价
             for (NewBeeMallShoppingCartItemVO newBeeMallShoppingCartItemVO : myShoppingCartItems) {
                 priceTotal += newBeeMallShoppingCartItemVO.getGoodsCount() * newBeeMallShoppingCartItemVO.getSellingPrice();
             }
-            if (priceTotal < 1) {
-                return "error/error_5xx";
-            }
+//            if (priceTotal < 1) {
+//                return "error/error_5xx";
+//            }
         }
-        request.setAttribute("itemsTotal", itemsTotal);
-        request.setAttribute("priceTotal", priceTotal);
-        request.setAttribute("myShoppingCartItems", myShoppingCartItems);
-        return "mall/cart";
+        ShoppingVo shoppingVo = new ShoppingVo();
+        shoppingVo.setMyShoppingCartItems(myShoppingCartItems);
+        shoppingVo.setItemsTotal(itemsTotal);
+        shoppingVo.setPriceTotal(priceTotal);
+
+        return ResultGenerator.genSuccessResult(shoppingVo);
     }
 
     @PostMapping("/shop-cart")

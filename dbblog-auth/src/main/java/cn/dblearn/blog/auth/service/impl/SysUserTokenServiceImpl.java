@@ -55,6 +55,33 @@ public class SysUserTokenServiceImpl implements SysUserTokenService {
     }
 
     /**
+     * 生成Token
+     *
+     * @param userId
+     * @return
+     */
+    @Override
+    public String createTokenForever(Long userId) {
+        // 生成一个token
+        String token = TokenGenerator.generateValue();
+
+        String tokenKey= RedisKeyConstants.USER_TOKEN+token;
+        String userIdKey= RedisKeyConstants.USER_TOKEN+userId;
+
+        //判断是否生成过token
+        String tokenInRedis=redisUtils.get(userIdKey);
+        if(!StringUtils.isEmpty(tokenInRedis)){
+            // 将原来的token删除
+            redisUtils.delete(RedisKeyConstants.USER_TOKEN+tokenInRedis);
+        }
+        // 将token存进redis
+        redisUtils.set(tokenKey,userId,RedisUtils.NOT_EXPIRE);
+        redisUtils.set(userIdKey,token,RedisUtils.NOT_EXPIRE);
+
+        return token;
+    }
+
+    /**
      * 查询token
      *
      * @param token

@@ -51,7 +51,7 @@ public class GitHubUserInfo {
    */
 
   private String login;
-  private long id;
+  private Long id;
   private String node_id;
   private String avatar_url;
   private String gravatar_id;
@@ -67,18 +67,15 @@ public class GitHubUserInfo {
   private String events_url;
   private String received_events_url;
   private String type;
-  private boolean site_admin;
+  private Boolean site_admin;
   private String name;
-  private Object company;
+
   private String blog;
-  private Object location;
-  private Object email;
-  private Object hireable;
-  private Object bio;
-  private int public_repos;
-  private int public_gists;
-  private int followers;
-  private int following;
+
+  private Integer public_repos;
+  private Integer public_gists;
+  private Integer followers;
+  private Integer following;
   private String created_at;
   private String updated_at;
 

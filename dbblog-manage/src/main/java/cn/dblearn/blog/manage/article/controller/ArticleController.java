@@ -1,5 +1,6 @@
 package cn.dblearn.blog.manage.article.controller;
 
+import cn.dblearn.blog.auth.controller.BaseController;
 import cn.dblearn.blog.common.Result;
 import cn.dblearn.blog.common.constants.RedisCacheNames;
 import cn.dblearn.blog.common.enums.ModuleEnum;
@@ -8,6 +9,7 @@ import cn.dblearn.blog.common.util.PageUtils;
 import cn.dblearn.blog.common.validator.ValidatorUtils;
 import cn.dblearn.blog.entity.article.Article;
 import cn.dblearn.blog.entity.article.dto.ArticleDTO;
+import cn.dblearn.blog.entity.mall.MallUser;
 import cn.dblearn.blog.manage.article.service.ArticleService;
 import cn.dblearn.blog.manage.operation.service.RecommendService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -34,80 +36,83 @@ import java.util.regex.Pattern;
  */
 @RestController
 @RequestMapping("/admin/article")
-@CacheConfig(cacheNames ={RedisCacheNames.RECOMMEND,RedisCacheNames.TAG,RedisCacheNames.ARTICLE,RedisCacheNames.TIMELINE})
-public class ArticleController {
+@CacheConfig(cacheNames = {RedisCacheNames.RECOMMEND, RedisCacheNames.TAG, RedisCacheNames.ARTICLE, RedisCacheNames.TIMELINE})
+public class ArticleController extends BaseController {
 
-    @Resource
-    private ArticleService articleService;
+  @Resource
+  private ArticleService articleService;
 
-    @Resource
-    private RecommendService recommendService;
+  @Resource
+  private RecommendService recommendService;
 
-    @Resource
-    private RedisTemplate<String,Object> redisTemplate;
+  @Resource
+  private RedisTemplate<String, Object> redisTemplate;
 
-    @GetMapping("/list")
-    @RequiresPermissions("article:list")
-    public Result listArticle(@RequestParam Map<String, Object> params) {
-        PageUtils page = articleService.queryPage(params);
-        return Result.ok().put("page",page);
-    }
+  @GetMapping("/list")
+  @RequiresPermissions("article:list")
+  public Result listArticle(@RequestParam Map<String, Object> params) {
+    PageUtils page = articleService.queryPage(params);
+    return Result.ok().put("page", page);
+  }
 
-    @GetMapping("/info/{articleId}")
-    @RequiresPermissions("article:list")
-    public Result info(@PathVariable Integer articleId) {
-        ArticleDTO article = articleService.getArticle(articleId);
-        return Result.ok().put("article",article);
-    }
+  @GetMapping("/info/{articleId}")
+  @RequiresPermissions("article:list")
+  public Result info(@PathVariable Integer articleId) {
+    ArticleDTO article = articleService.getArticle(articleId);
+    return Result.ok().put("article", article);
+  }
 
-    @PostMapping("/save")
-    //@RequiresPermissions("article:save")
-    @CacheEvict(allEntries = true)
-    @RefreshEsMqSender(sender = "dbblog-manage-saveArticle")
-    public Result saveArticle(@RequestBody ArticleDTO article){
-        ValidatorUtils.validateEntity(article);
-        article.setPublish(true);
-        articleService.saveArticle(article);
-        return Result.ok();
-    }
+  @PostMapping("/save")
+  //@RequiresPermissions("article:save")
+  @CacheEvict(allEntries = true)
+  @RefreshEsMqSender(sender = "dbblog-manage-saveArticle")
+  public Result saveArticle(@RequestBody ArticleDTO article) {
 
-    @PutMapping("/update")
+    ValidatorUtils.validateEntity(article);
+    MallUser user = getUser();
+    article.setUserId(user.getUserId());
+    article.setPublish(true);
+    articleService.saveArticle(article);
+    return Result.ok();
+  }
+
+  @PutMapping("/update")
 //    @RequiresPermissions("article:update")
-    @CacheEvict(allEntries = true)
-    @RefreshEsMqSender(sender = "dbblog-manage-updateArticle")
-    public Result updateArticle(@RequestBody ArticleDTO article){
-        ValidatorUtils.validateEntity(article);
-        articleService.updateArticle(article);
-        return Result.ok();
-    }
+  @CacheEvict(allEntries = true)
+  @RefreshEsMqSender(sender = "dbblog-manage-updateArticle")
+  public Result updateArticle(@RequestBody ArticleDTO article) {
+    ValidatorUtils.validateEntity(article);
+    articleService.updateArticle(article);
+    return Result.ok();
+  }
 
-    @PutMapping("/update/status")
+  @PutMapping("/update/status")
 //    @RequiresPermissions("article:update")
-    @CacheEvict(allEntries = true)
-    @RefreshEsMqSender(sender = "dbblog-manage-updateStatus")
-    public Result updateStatus(@RequestBody Article article) {
-        articleService.updateById(article);
-        return Result.ok();
-    }
+  @CacheEvict(allEntries = true)
+  @RefreshEsMqSender(sender = "dbblog-manage-updateStatus")
+  public Result updateStatus(@RequestBody Article article) {
+    articleService.updateById(article);
+    return Result.ok();
+  }
 
 
-    @DeleteMapping("/delete")
-    @RequiresPermissions("article:delete")
-    @Transactional(rollbackFor = Exception.class)
-    @CacheEvict(allEntries = true)
-    @RefreshEsMqSender(sender = "dbblog-manage-deleteArticle")
-    public Result deleteBatch(@RequestBody Integer[] articleIds) {
-        recommendService.deleteBatchByLinkId(articleIds, ModuleEnum.ARTICLE.getValue());
-        articleService.deleteBatch(articleIds);
-        return Result.ok();
-    }
+  @DeleteMapping("/delete")
+  @RequiresPermissions("article:delete")
+  @Transactional(rollbackFor = Exception.class)
+  @CacheEvict(allEntries = true)
+  @RefreshEsMqSender(sender = "dbblog-manage-deleteArticle")
+  public Result deleteBatch(@RequestBody Integer[] articleIds) {
+    recommendService.deleteBatchByLinkId(articleIds, ModuleEnum.ARTICLE.getValue());
+    articleService.deleteBatch(articleIds);
+    return Result.ok();
+  }
 
-    @DeleteMapping("/cache/refresh")
-    @RequiresPermissions("article:cache:refresh")
-    public Result flush() {
-        Set<String> keys = redisTemplate.keys(RedisCacheNames.PROFIX+"*");
-        redisTemplate.delete(keys);
-        return Result.ok();
-    }
+  @DeleteMapping("/cache/refresh")
+  @RequiresPermissions("article:cache:refresh")
+  public Result flush() {
+    Set<String> keys = redisTemplate.keys(RedisCacheNames.PROFIX + "*");
+    redisTemplate.delete(keys);
+    return Result.ok();
+  }
 
 }

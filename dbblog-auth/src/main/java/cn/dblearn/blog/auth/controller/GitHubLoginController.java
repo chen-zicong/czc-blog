@@ -2,9 +2,12 @@ package cn.dblearn.blog.auth.controller;
 
 import cn.dblearn.blog.auth.config.GitHubConfig;
 import cn.dblearn.blog.auth.constant.GitHubRequestUrl;
+import cn.dblearn.blog.auth.service.SysUserTokenService;
 import cn.dblearn.blog.common.Result;
 import cn.dblearn.blog.common.util.JsonUtils;
+import cn.dblearn.blog.entity.mall.MallUser;
 import cn.dblearn.blog.entity.user.GitHubUserInfo;
+import cn.dblearn.blog.mapper.mall.MallUserMapper;
 import cn.hutool.Hutool;
 import cn.hutool.http.HttpUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +36,12 @@ public class GitHubLoginController {
   @Resource
   private GitHubConfig gitHubConfig;
 
+  @Resource
+  private MallUserMapper mallUserMapper;
+
+  @Resource
+  private SysUserTokenService sysUserTokenService;
+
   @RequestMapping("/github")
   public Map githubRedirect(Map map) {
     log.info(map.toString());
@@ -48,24 +57,31 @@ public class GitHubLoginController {
             + "&code=" + code
     );
 
-    String token = tokenBody.split("&")[0].replace("access_token=", "");
+    String token = tokenBody.split("&")[0].replace( "access_token=", "");
 
     String userInfoBody = HttpUtil.get(GitHubRequestUrl.USER_INFO
             + "?access_token=" + token);
 
 
     GitHubUserInfo userInfo = JsonUtils.toObj(userInfoBody, GitHubUserInfo.class);
+    MallUser mallUser = new MallUser();
 
 
-    log.info(userInfo.toString());
+    if (mallUserMapper.selectByPrimaryKey(userInfo.getId()) == null) {
+      mallUser.setNickName(userInfo.getLogin());
+      mallUser.setUserId(userInfo.getId());
+    } else {
+      mallUser.setNickName(userInfo.getLogin());
+    }
+    mallUserMapper.insertSelective(mallUser);
 
-    modelMap.addAttribute("token",userInfo.getId()+"");
+    String tokenForever = sysUserTokenService.createTokenForever(mallUser.getUserId());
+
+
+    modelMap.addAttribute("token", tokenForever);
+    modelMap.addAttribute("username", userInfo.getLogin());
     return "login";
   }
 
-  @GetMapping("login")
-  public void  login(){
 
-
-  }
 }

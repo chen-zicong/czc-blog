@@ -3,18 +3,15 @@ package cn.dblearn.blog.manage.mall.service.impl;
 
 import cn.dblearn.blog.common.mall.*;
 import cn.dblearn.blog.common.util.util.BeanUtil;
-import cn.dblearn.blog.common.util.util.NumberUtil;
 import cn.dblearn.blog.common.util.util.PageQueryUtil;
 import cn.dblearn.blog.common.util.util.PageResult;
-import cn.dblearn.blog.entity.mall.NewBeeMallGoods;
-import cn.dblearn.blog.entity.mall.NewBeeMallOrder;
+import cn.dblearn.blog.entity.mall.MallOrder;
 import cn.dblearn.blog.entity.mall.NewBeeMallOrderItem;
-import cn.dblearn.blog.entity.mall.StockNumDTO;
 import cn.dblearn.blog.entity.mall.vo.*;
 import cn.dblearn.blog.manage.mall.service.BackMallOrderService;
-import cn.dblearn.blog.mapper.mall.NewBeeMallGoodsMapper;
+import cn.dblearn.blog.mapper.mall.MallGoodsMapper;
 import cn.dblearn.blog.mapper.mall.NewBeeMallOrderItemMapper;
-import cn.dblearn.blog.mapper.mall.NewBeeMallOrderMapper;
+import cn.dblearn.blog.mapper.mall.MallOrderMapper;
 import cn.dblearn.blog.mapper.mall.NewBeeMallShoppingCartItemMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,8 +21,6 @@ import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.groupingBy;
 
@@ -33,32 +28,32 @@ import static java.util.stream.Collectors.groupingBy;
 public class BackMallOrderServiceImpl implements BackMallOrderService {
 
     @Autowired
-    private NewBeeMallOrderMapper newBeeMallOrderMapper;
+    private MallOrderMapper mallOrderMapper;
     @Autowired
     private NewBeeMallOrderItemMapper newBeeMallOrderItemMapper;
     @Autowired
     private NewBeeMallShoppingCartItemMapper newBeeMallShoppingCartItemMapper;
     @Autowired
-    private NewBeeMallGoodsMapper newBeeMallGoodsMapper;
+    private MallGoodsMapper mallGoodsMapper;
 
     @Override
     public PageResult getNewBeeMallOrdersPage(PageQueryUtil pageUtil) {
-        List<NewBeeMallOrder> newBeeMallOrders = newBeeMallOrderMapper.findNewBeeMallOrderList(pageUtil);
-        int total = newBeeMallOrderMapper.getTotalNewBeeMallOrders(pageUtil);
-        PageResult pageResult = new PageResult(newBeeMallOrders, total, pageUtil.getLimit(), pageUtil.getPage());
+        List<MallOrder> mallOrders = mallOrderMapper.findNewBeeMallOrderList(pageUtil);
+        int total = mallOrderMapper.getTotalNewBeeMallOrders(pageUtil);
+        PageResult pageResult = new PageResult(mallOrders, total, pageUtil.getLimit(), pageUtil.getPage());
         return pageResult;
     }
 
     @Override
     @Transactional
-    public String updateOrderInfo(NewBeeMallOrder newBeeMallOrder) {
-        NewBeeMallOrder temp = newBeeMallOrderMapper.selectByPrimaryKey(newBeeMallOrder.getOrderId());
+    public String updateOrderInfo(MallOrder mallOrder) {
+        MallOrder temp = mallOrderMapper.selectByPrimaryKey(mallOrder.getOrderId());
         //不为空且orderStatus>=0且状态为出库之前可以修改部分信息
         if (temp != null && temp.getOrderStatus() >= 0 && temp.getOrderStatus() < 3) {
-            temp.setTotalPrice(newBeeMallOrder.getTotalPrice());
-            temp.setUserAddress(newBeeMallOrder.getUserAddress());
+            temp.setTotalPrice(mallOrder.getTotalPrice());
+            temp.setUserAddress(mallOrder.getUserAddress());
             temp.setUpdateTime(LocalDateTime.now());
-            if (newBeeMallOrderMapper.updateByPrimaryKeySelective(temp) > 0) {
+            if (mallOrderMapper.updateByPrimaryKeySelective(temp) > 0) {
                 return ServiceResultEnum.SUCCESS.getResult();
             }
             return ServiceResultEnum.DB_ERROR.getResult();
@@ -70,21 +65,21 @@ public class BackMallOrderServiceImpl implements BackMallOrderService {
     @Transactional
     public String checkDone(Long[] ids) {
         //查询所有的订单 判断状态 修改状态和更新时间
-        List<NewBeeMallOrder> orders = newBeeMallOrderMapper.selectByPrimaryKeys(Arrays.asList(ids));
+        List<MallOrder> orders = mallOrderMapper.selectByPrimaryKeys(Arrays.asList(ids));
         String errorOrderNos = "";
         if (!CollectionUtils.isEmpty(orders)) {
-            for (NewBeeMallOrder newBeeMallOrder : orders) {
-                if (newBeeMallOrder.getIsDeleted() == 1) {
-                    errorOrderNos += newBeeMallOrder.getOrderNo() + " ";
+            for (MallOrder mallOrder : orders) {
+                if (mallOrder.getIsDeleted() == 1) {
+                    errorOrderNos += mallOrder.getOrderNo() + " ";
                     continue;
                 }
-                if (newBeeMallOrder.getOrderStatus() != 1) {
-                    errorOrderNos += newBeeMallOrder.getOrderNo() + " ";
+                if (mallOrder.getOrderStatus() != 1) {
+                    errorOrderNos += mallOrder.getOrderNo() + " ";
                 }
             }
             if (StringUtils.isEmpty(errorOrderNos)) {
                 //订单状态正常 可以执行配货完成操作 修改订单状态和更新时间
-                if (newBeeMallOrderMapper.checkDone(Arrays.asList(ids)) > 0) {
+                if (mallOrderMapper.checkDone(Arrays.asList(ids)) > 0) {
                     return ServiceResultEnum.SUCCESS.getResult();
                 } else {
                     return ServiceResultEnum.DB_ERROR.getResult();
@@ -106,21 +101,21 @@ public class BackMallOrderServiceImpl implements BackMallOrderService {
     @Transactional
     public String checkOut(Long[] ids) {
         //查询所有的订单 判断状态 修改状态和更新时间
-        List<NewBeeMallOrder> orders = newBeeMallOrderMapper.selectByPrimaryKeys(Arrays.asList(ids));
+        List<MallOrder> orders = mallOrderMapper.selectByPrimaryKeys(Arrays.asList(ids));
         String errorOrderNos = "";
         if (!CollectionUtils.isEmpty(orders)) {
-            for (NewBeeMallOrder newBeeMallOrder : orders) {
-                if (newBeeMallOrder.getIsDeleted() == 1) {
-                    errorOrderNos += newBeeMallOrder.getOrderNo() + " ";
+            for (MallOrder mallOrder : orders) {
+                if (mallOrder.getIsDeleted() == 1) {
+                    errorOrderNos += mallOrder.getOrderNo() + " ";
                     continue;
                 }
-                if (newBeeMallOrder.getOrderStatus() != 1 && newBeeMallOrder.getOrderStatus() != 2) {
-                    errorOrderNos += newBeeMallOrder.getOrderNo() + " ";
+                if (mallOrder.getOrderStatus() != 1 && mallOrder.getOrderStatus() != 2) {
+                    errorOrderNos += mallOrder.getOrderNo() + " ";
                 }
             }
             if (StringUtils.isEmpty(errorOrderNos)) {
                 //订单状态正常 可以执行出库操作 修改订单状态和更新时间
-                if (newBeeMallOrderMapper.checkOut(Arrays.asList(ids)) > 0) {
+                if (mallOrderMapper.checkOut(Arrays.asList(ids)) > 0) {
                     return ServiceResultEnum.SUCCESS.getResult();
                 } else {
                     return ServiceResultEnum.DB_ERROR.getResult();
@@ -142,23 +137,23 @@ public class BackMallOrderServiceImpl implements BackMallOrderService {
     @Transactional
     public String closeOrder(Long[] ids) {
         //查询所有的订单 判断状态 修改状态和更新时间
-        List<NewBeeMallOrder> orders = newBeeMallOrderMapper.selectByPrimaryKeys(Arrays.asList(ids));
+        List<MallOrder> orders = mallOrderMapper.selectByPrimaryKeys(Arrays.asList(ids));
         String errorOrderNos = "";
         if (!CollectionUtils.isEmpty(orders)) {
-            for (NewBeeMallOrder newBeeMallOrder : orders) {
+            for (MallOrder mallOrder : orders) {
                 // isDeleted=1 一定为已关闭订单
-                if (newBeeMallOrder.getIsDeleted() == 1) {
-                    errorOrderNos += newBeeMallOrder.getOrderNo() + " ";
+                if (mallOrder.getIsDeleted() == 1) {
+                    errorOrderNos += mallOrder.getOrderNo() + " ";
                     continue;
                 }
                 //已关闭或者已完成无法关闭订单
-                if (newBeeMallOrder.getOrderStatus() == 4 || newBeeMallOrder.getOrderStatus() < 0) {
-                    errorOrderNos += newBeeMallOrder.getOrderNo() + " ";
+                if (mallOrder.getOrderStatus() == 4 || mallOrder.getOrderStatus() < 0) {
+                    errorOrderNos += mallOrder.getOrderNo() + " ";
                 }
             }
             if (StringUtils.isEmpty(errorOrderNos)) {
                 //订单状态正常 可以执行关闭操作 修改订单状态和更新时间
-                if (newBeeMallOrderMapper.closeOrder(Arrays.asList(ids), NewBeeMallOrderStatusEnum.ORDER_CLOSED_BY_JUDGE.getOrderStatus()) > 0) {
+                if (mallOrderMapper.closeOrder(Arrays.asList(ids), NewBeeMallOrderStatusEnum.ORDER_CLOSED_BY_JUDGE.getOrderStatus()) > 0) {
                     return ServiceResultEnum.SUCCESS.getResult();
                 } else {
                     return ServiceResultEnum.DB_ERROR.getResult();
@@ -180,9 +175,9 @@ public class BackMallOrderServiceImpl implements BackMallOrderService {
 
     @Override
     public List<NewBeeMallOrderItemVO> getOrderItems(Long id) {
-        NewBeeMallOrder newBeeMallOrder = newBeeMallOrderMapper.selectByPrimaryKey(id);
-        if (newBeeMallOrder != null) {
-            List<NewBeeMallOrderItem> orderItems = newBeeMallOrderItemMapper.selectByOrderId(newBeeMallOrder.getOrderId());
+        MallOrder mallOrder = mallOrderMapper.selectByPrimaryKey(id);
+        if (mallOrder != null) {
+            List<NewBeeMallOrderItem> orderItems = newBeeMallOrderItemMapper.selectByOrderId(mallOrder.getOrderId());
             //获取订单项数据
             if (!CollectionUtils.isEmpty(orderItems)) {
                 List<NewBeeMallOrderItemVO> newBeeMallOrderItemVOS = BeanUtil.copyList(orderItems, NewBeeMallOrderItemVO.class);

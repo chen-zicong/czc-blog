@@ -17,5 +17,5 @@ public class ShoppingVo {
 
   List<NewBeeMallShoppingCartItemVO> myShoppingCartItems;
   int itemsTotal = 0;
-  int priceTotal = 0;
+  String priceTotal = "0.00";
 }

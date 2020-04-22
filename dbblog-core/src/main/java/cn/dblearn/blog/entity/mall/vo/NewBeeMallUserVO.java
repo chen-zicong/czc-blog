@@ -14,6 +14,8 @@ public class NewBeeMallUserVO implements Serializable {
 
     private String address;
 
+    private String  phone ;
+
     private int shopCartItemCount;
 
     public Long getUserId() {

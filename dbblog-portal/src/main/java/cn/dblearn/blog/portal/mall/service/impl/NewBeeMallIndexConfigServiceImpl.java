@@ -1,15 +1,12 @@
 package cn.dblearn.blog.portal.mall.service.impl;
 
 
-import cn.dblearn.blog.common.mall.ServiceResultEnum;
 import cn.dblearn.blog.common.util.util.BeanUtil;
-import cn.dblearn.blog.common.util.util.PageQueryUtil;
-import cn.dblearn.blog.common.util.util.PageResult;
 import cn.dblearn.blog.entity.mall.IndexConfig;
-import cn.dblearn.blog.entity.mall.NewBeeMallGoods;
+import cn.dblearn.blog.entity.mall.MallGoods;
 import cn.dblearn.blog.entity.mall.vo.NewBeeMallIndexConfigGoodsVO;
 import cn.dblearn.blog.mapper.mall.IndexConfigMapper;
-import cn.dblearn.blog.mapper.mall.NewBeeMallGoodsMapper;
+import cn.dblearn.blog.mapper.mall.MallGoodsMapper;
 import cn.dblearn.blog.portal.mall.service.NewBeeMallIndexConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,7 +23,7 @@ public class NewBeeMallIndexConfigServiceImpl implements NewBeeMallIndexConfigSe
     private IndexConfigMapper indexConfigMapper;
 
     @Autowired
-    private NewBeeMallGoodsMapper goodsMapper;
+    private MallGoodsMapper goodsMapper;
 
 
     @Override
@@ -36,8 +33,8 @@ public class NewBeeMallIndexConfigServiceImpl implements NewBeeMallIndexConfigSe
         if (!CollectionUtils.isEmpty(indexConfigs)) {
             //取出所有的goodsId
             List<Long> goodsIds = indexConfigs.stream().map(IndexConfig::getGoodsId).collect(Collectors.toList());
-            List<NewBeeMallGoods> newBeeMallGoods = goodsMapper.selectByPrimaryKeys(goodsIds);
-            newBeeMallIndexConfigGoodsVOS = BeanUtil.copyList(newBeeMallGoods, NewBeeMallIndexConfigGoodsVO.class);
+            List<MallGoods> mallGoods = goodsMapper.selectByPrimaryKeys(goodsIds);
+            newBeeMallIndexConfigGoodsVOS = BeanUtil.copyList(mallGoods, NewBeeMallIndexConfigGoodsVO.class);
             for (NewBeeMallIndexConfigGoodsVO newBeeMallIndexConfigGoodsVO : newBeeMallIndexConfigGoodsVOS) {
                 String goodsName = newBeeMallIndexConfigGoodsVO.getGoodsName();
                 String goodsIntro = newBeeMallIndexConfigGoodsVO.getGoodsIntro();

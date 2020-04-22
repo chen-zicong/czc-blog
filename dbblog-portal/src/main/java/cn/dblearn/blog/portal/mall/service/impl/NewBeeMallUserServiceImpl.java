@@ -11,6 +11,7 @@ import cn.dblearn.blog.entity.mall.MallUser;
 import cn.dblearn.blog.entity.mall.vo.NewBeeMallUserVO;
 import cn.dblearn.blog.mapper.mall.MallUserMapper;
 import cn.dblearn.blog.portal.mall.service.NewBeeMallUserService;
+import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -72,11 +73,21 @@ public class NewBeeMallUserServiceImpl implements NewBeeMallUserService {
                 NewBeeMallUserVO newBeeMallUserVO = new NewBeeMallUserVO();
                 user = mallUserMapper.selectByPrimaryKey(mallUser.getUserId());
                 BeanUtil.copyProperties(user, newBeeMallUserVO);
-                httpSession.setAttribute(Constants.MALL_USER_SESSION_KEY, newBeeMallUserVO);
                 return newBeeMallUserVO;
             }
         }
         return null;
+    }
+
+    @Override
+    public NewBeeMallUserVO detail(Long id) {
+        MallUser mallUser = mallUserMapper.selectByPrimaryKey(id);
+        if(mallUser == null){
+            return null;
+        }
+        NewBeeMallUserVO newBeeMallUserVO = new NewBeeMallUserVO();
+        BeanUtil.copyProperties(mallUser, newBeeMallUserVO);
+        return newBeeMallUserVO;
     }
 
 }

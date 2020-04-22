@@ -39,5 +39,7 @@ public interface NewBeeMallUserService {
      */
     NewBeeMallUserVO updateUserInfo(MallUser mallUser, HttpSession httpSession);
 
+    NewBeeMallUserVO detail(Long id);
+
 
 }

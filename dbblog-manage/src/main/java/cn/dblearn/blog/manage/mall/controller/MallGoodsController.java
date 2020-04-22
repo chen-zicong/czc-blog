@@ -8,7 +8,7 @@ import cn.dblearn.blog.common.util.util.PageQueryUtil;
 import cn.dblearn.blog.common.util.util.Result;
 import cn.dblearn.blog.common.util.util.ResultGenerator;
 import cn.dblearn.blog.entity.mall.GoodsCategory;
-import cn.dblearn.blog.entity.mall.NewBeeMallGoods;
+import cn.dblearn.blog.entity.mall.MallGoods;
 import cn.dblearn.blog.manage.mall.service.BackMallCategoryService;
 import cn.dblearn.blog.manage.mall.service.BackMallGoodsService;
 import org.springframework.stereotype.Controller;
@@ -31,7 +31,7 @@ import java.util.Objects;
  */
 @Controller
 @RequestMapping("/admin")
-public class NewBeeMallGoodsController {
+public class MallGoodsController {
 
     @Resource
     private BackMallGoodsService newBeeMallGoodsService;
@@ -68,14 +68,14 @@ public class NewBeeMallGoodsController {
     @GetMapping("/goods/edit/{goodsId}")
     public String edit(HttpServletRequest request, @PathVariable("goodsId") Long goodsId) {
         request.setAttribute("path", "edit");
-        NewBeeMallGoods newBeeMallGoods = newBeeMallGoodsService.getNewBeeMallGoodsById(goodsId);
-        if (newBeeMallGoods == null) {
+        MallGoods mallGoods = newBeeMallGoodsService.getNewBeeMallGoodsById(goodsId);
+        if (mallGoods == null) {
             return "error/error_400";
         }
-        if (newBeeMallGoods.getGoodsCategoryId() > 0) {
-            if (newBeeMallGoods.getGoodsCategoryId() != null || newBeeMallGoods.getGoodsCategoryId() > 0) {
+        if (mallGoods.getGoodsCategoryId() > 0) {
+            if (mallGoods.getGoodsCategoryId() != null || mallGoods.getGoodsCategoryId() > 0) {
                 //有分类字段则查询相关分类数据返回给前端以供分类的三级联动显示
-                GoodsCategory currentGoodsCategory = newBeeMallCategoryService.getGoodsCategoryById(newBeeMallGoods.getGoodsCategoryId());
+                GoodsCategory currentGoodsCategory = newBeeMallCategoryService.getGoodsCategoryById(mallGoods.getGoodsCategoryId());
                 //商品表中存储的分类id字段为三级分类的id，不为三级分类则是错误数据
                 if (currentGoodsCategory != null && currentGoodsCategory.getCategoryLevel() == NewBeeMallCategoryLevelEnum.LEVEL_THREE.getLevel()) {
                     //查询所有的一级分类
@@ -102,7 +102,7 @@ public class NewBeeMallGoodsController {
                 }
             }
         }
-        if (newBeeMallGoods.getGoodsCategoryId() == 0) {
+        if (mallGoods.getGoodsCategoryId() == 0) {
             //查询所有的一级分类
             List<GoodsCategory> firstLevelCategories = newBeeMallCategoryService.selectByLevelAndParentIdsAndNumber(Collections.singletonList(0L), NewBeeMallCategoryLevelEnum.LEVEL_ONE.getLevel());
             if (!CollectionUtils.isEmpty(firstLevelCategories)) {
@@ -117,7 +117,7 @@ public class NewBeeMallGoodsController {
                 }
             }
         }
-        request.setAttribute("goods", newBeeMallGoods);
+        request.setAttribute("goods", mallGoods);
         request.setAttribute("path", "goods-edit");
         return "admin/newbee_mall_goods_edit";
     }
@@ -140,20 +140,20 @@ public class NewBeeMallGoodsController {
      */
     @RequestMapping(value = "/goods/save", method = RequestMethod.POST)
     @ResponseBody
-    public Result save(@RequestBody NewBeeMallGoods newBeeMallGoods) {
-        if (StringUtils.isEmpty(newBeeMallGoods.getGoodsName())
-                || StringUtils.isEmpty(newBeeMallGoods.getGoodsIntro())
-                || StringUtils.isEmpty(newBeeMallGoods.getTag())
-                || Objects.isNull(newBeeMallGoods.getOriginalPrice())
-                || Objects.isNull(newBeeMallGoods.getGoodsCategoryId())
-                || Objects.isNull(newBeeMallGoods.getSellingPrice())
-                || Objects.isNull(newBeeMallGoods.getStockNum())
-                || Objects.isNull(newBeeMallGoods.getGoodsSellStatus())
-                || StringUtils.isEmpty(newBeeMallGoods.getGoodsCoverImg())
-                || StringUtils.isEmpty(newBeeMallGoods.getGoodsDetailContent())) {
+    public Result save(@RequestBody MallGoods mallGoods) {
+        if (StringUtils.isEmpty(mallGoods.getGoodsName())
+                || StringUtils.isEmpty(mallGoods.getGoodsIntro())
+                || StringUtils.isEmpty(mallGoods.getTag())
+                || Objects.isNull(mallGoods.getOriginalPrice())
+                || Objects.isNull(mallGoods.getGoodsCategoryId())
+                || Objects.isNull(mallGoods.getSellingPrice())
+                || Objects.isNull(mallGoods.getStockNum())
+                || Objects.isNull(mallGoods.getGoodsSellStatus())
+                || StringUtils.isEmpty(mallGoods.getGoodsCoverImg())
+                || StringUtils.isEmpty(mallGoods.getGoodsDetailContent())) {
             return ResultGenerator.genFailResult("参数异常！");
         }
-        String result = newBeeMallGoodsService.saveNewBeeMallGoods(newBeeMallGoods);
+        String result = newBeeMallGoodsService.saveNewBeeMallGoods(mallGoods);
         if (ServiceResultEnum.SUCCESS.getResult().equals(result)) {
             return ResultGenerator.genSuccessResult();
         } else {
@@ -167,21 +167,21 @@ public class NewBeeMallGoodsController {
      */
     @RequestMapping(value = "/goods/update", method = RequestMethod.POST)
     @ResponseBody
-    public Result update(@RequestBody NewBeeMallGoods newBeeMallGoods) {
-        if (Objects.isNull(newBeeMallGoods.getGoodsId())
-                || StringUtils.isEmpty(newBeeMallGoods.getGoodsName())
-                || StringUtils.isEmpty(newBeeMallGoods.getGoodsIntro())
-                || StringUtils.isEmpty(newBeeMallGoods.getTag())
-                || Objects.isNull(newBeeMallGoods.getOriginalPrice())
-                || Objects.isNull(newBeeMallGoods.getSellingPrice())
-                || Objects.isNull(newBeeMallGoods.getGoodsCategoryId())
-                || Objects.isNull(newBeeMallGoods.getStockNum())
-                || Objects.isNull(newBeeMallGoods.getGoodsSellStatus())
-                || StringUtils.isEmpty(newBeeMallGoods.getGoodsCoverImg())
-                || StringUtils.isEmpty(newBeeMallGoods.getGoodsDetailContent())) {
+    public Result update(@RequestBody MallGoods mallGoods) {
+        if (Objects.isNull(mallGoods.getGoodsId())
+                || StringUtils.isEmpty(mallGoods.getGoodsName())
+                || StringUtils.isEmpty(mallGoods.getGoodsIntro())
+                || StringUtils.isEmpty(mallGoods.getTag())
+                || Objects.isNull(mallGoods.getOriginalPrice())
+                || Objects.isNull(mallGoods.getSellingPrice())
+                || Objects.isNull(mallGoods.getGoodsCategoryId())
+                || Objects.isNull(mallGoods.getStockNum())
+                || Objects.isNull(mallGoods.getGoodsSellStatus())
+                || StringUtils.isEmpty(mallGoods.getGoodsCoverImg())
+                || StringUtils.isEmpty(mallGoods.getGoodsDetailContent())) {
             return ResultGenerator.genFailResult("参数异常！");
         }
-        String result = newBeeMallGoodsService.updateNewBeeMallGoods(newBeeMallGoods);
+        String result = newBeeMallGoodsService.updateNewBeeMallGoods(mallGoods);
         if (ServiceResultEnum.SUCCESS.getResult().equals(result)) {
             return ResultGenerator.genSuccessResult();
         } else {
@@ -195,7 +195,7 @@ public class NewBeeMallGoodsController {
     @GetMapping("/goods/info/{id}")
     @ResponseBody
     public Result info(@PathVariable("id") Long id) {
-        NewBeeMallGoods goods = newBeeMallGoodsService.getNewBeeMallGoodsById(id);
+        MallGoods goods = newBeeMallGoodsService.getNewBeeMallGoodsById(id);
         if (goods == null) {
             return ResultGenerator.genFailResult(ServiceResultEnum.DATA_NOT_EXIST.getResult());
         }

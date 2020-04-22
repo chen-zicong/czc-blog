@@ -3,12 +3,13 @@ package cn.dblearn.blog.entity.mall;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import lombok.Data;
 
-@ApiModel(value="cn-dblearn-blog-entity-mall-NewBeeMallOrder")
+@ApiModel(value="cn-dblearn-blog-entity-mall-MallOrder")
 @Data
-public class NewBeeMallOrder implements Serializable {
+public class MallOrder implements Serializable {
     /**
     * 订单表主键id
     */
@@ -31,7 +32,7 @@ public class NewBeeMallOrder implements Serializable {
     * 订单总价
     */
     @ApiModelProperty(value="订单总价")
-    private Integer totalPrice;
+    private BigDecimal totalPrice;
 
     /**
     * 支付状态:0.未支付,1.支付成功,-1:支付失败

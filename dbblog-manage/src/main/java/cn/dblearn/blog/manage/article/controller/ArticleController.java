@@ -69,8 +69,8 @@ public class ArticleController extends BaseController {
   public Result saveArticle(@RequestBody ArticleDTO article) {
 
     ValidatorUtils.validateEntity(article);
-    MallUser user = getUser();
-    article.setUserId(user.getUserId());
+  //  MallUser user = getUser();
+    //article.setUserId(user.getUserId());
     article.setPublish(true);
     articleService.saveArticle(article);
     return Result.ok();

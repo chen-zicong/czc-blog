@@ -8,11 +8,11 @@ import cn.dblearn.blog.common.util.util.BeanUtil;
 import cn.dblearn.blog.common.util.util.PageQueryUtil;
 import cn.dblearn.blog.common.util.util.Result;
 import cn.dblearn.blog.common.util.util.ResultGenerator;
-import cn.dblearn.blog.entity.mall.NewBeeMallGoods;
+import cn.dblearn.blog.entity.mall.MallGoods;
 import cn.dblearn.blog.entity.mall.vo.NewBeeMallGoodsDetailVO;
 import cn.dblearn.blog.entity.mall.vo.SearchPageCategoryVO;
 import cn.dblearn.blog.portal.mall.service.NewBeeMallCategoryService;
-import cn.dblearn.blog.portal.mall.service.NewBeeMallGoodsService;
+import cn.dblearn.blog.portal.mall.service.MallGoodsService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.stereotype.Controller;
@@ -31,7 +31,7 @@ import java.util.Map;
 public class GoodsController {
 
     @Resource
-    private NewBeeMallGoodsService newBeeMallGoodsService;
+    private MallGoodsService mallGoodsService;
     @Resource
     private NewBeeMallCategoryService newBeeMallCategoryService;
 
@@ -63,7 +63,7 @@ public class GoodsController {
         params.put("keyword", keyword);
         //封装商品数据
         PageQueryUtil pageUtil = new PageQueryUtil(params);
-        request.setAttribute("pageResult", newBeeMallGoodsService.searchNewBeeMallGoods(pageUtil));
+        request.setAttribute("pageResult", mallGoodsService.searchNewBeeMallGoods(pageUtil));
         return "mall/search";
     }
 
@@ -74,7 +74,7 @@ public class GoodsController {
         if (goodsId < 1) {
            return ResultGenerator.genFailResult("无数据");
         }
-        NewBeeMallGoods goods = newBeeMallGoodsService.getNewBeeMallGoodsById(goodsId);
+        MallGoods goods = mallGoodsService.getNewBeeMallGoodsById(goodsId);
         if (goods == null) {
             NewBeeMallException.fail(ServiceResultEnum.GOODS_NOT_EXIST.getResult());
         }
@@ -83,6 +83,8 @@ public class GoodsController {
         }
         NewBeeMallGoodsDetailVO goodsDetailVO = new NewBeeMallGoodsDetailVO();
         BeanUtil.copyProperties(goods, goodsDetailVO);
+        goodsDetailVO.setOriginalPrice(goods.getOriginalPrice().toString());
+        goodsDetailVO.setSellingPrice(goods.getSellingPrice().toString());
         goodsDetailVO.setGoodsCarouselList(goods.getGoodsCarousel().split(","));
 
         return ResultGenerator.genSuccessResult(goodsDetailVO);

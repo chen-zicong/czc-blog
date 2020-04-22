@@ -1,6 +1,7 @@
 package cn.dblearn.blog.entity.mall.vo;
 
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -10,6 +11,7 @@ import java.util.List;
 /**
  * 订单详情页页面VO
  */
+@Data
 public class NewBeeMallOrderDetailVO implements Serializable {
 
     /**
@@ -22,7 +24,7 @@ public class NewBeeMallOrderDetailVO implements Serializable {
      * 订单总价
      */
     @ApiModelProperty(value="订单总价")
-    private Integer totalPrice;
+    private String totalPrice;
 
     /**
      * 支付状态:0.未支付,1.支付成功,-1:支付失败
@@ -64,99 +66,5 @@ public class NewBeeMallOrderDetailVO implements Serializable {
 
     private List<NewBeeMallOrderItemVO> newBeeMallOrderItemVOS;
 
-    public String getOrderNo() {
-        return orderNo;
-    }
 
-    public void setOrderNo(String orderNo) {
-        this.orderNo = orderNo;
-    }
-
-    public Integer getTotalPrice() {
-        return totalPrice;
-    }
-
-    public void setTotalPrice(Integer totalPrice) {
-        this.totalPrice = totalPrice;
-    }
-
-    public Byte getPayStatus() {
-        return payStatus;
-    }
-
-    public void setPayStatus(Byte payStatus) {
-        this.payStatus = payStatus;
-    }
-
-    public Byte getPayType() {
-        return payType;
-    }
-
-    public void setPayType(Byte payType) {
-        this.payType = payType;
-    }
-
-    public LocalDateTime getPayTime() {
-        return payTime;
-    }
-
-    public void setPayTime(LocalDateTime payTime) {
-        this.payTime = payTime;
-    }
-
-    public Byte getOrderStatus() {
-        return orderStatus;
-    }
-
-    public void setOrderStatus(Byte orderStatus) {
-        this.orderStatus = orderStatus;
-    }
-
-    public String getUserAddress() {
-        return userAddress;
-    }
-
-    public void setUserAddress(String userAddress) {
-        this.userAddress = userAddress;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public String getPayStatusString() {
-        return payStatusString;
-    }
-
-    public void setPayStatusString(String payStatusString) {
-        this.payStatusString = payStatusString;
-    }
-
-    public String getPayTypeString() {
-        return payTypeString;
-    }
-
-    public void setPayTypeString(String payTypeString) {
-        this.payTypeString = payTypeString;
-    }
-
-    public String getOrderStatusString() {
-        return orderStatusString;
-    }
-
-    public void setOrderStatusString(String orderStatusString) {
-        this.orderStatusString = orderStatusString;
-    }
-
-    public List<NewBeeMallOrderItemVO> getNewBeeMallOrderItemVOS() {
-        return newBeeMallOrderItemVOS;
-    }
-
-    public void setNewBeeMallOrderItemVOS(List<NewBeeMallOrderItemVO> newBeeMallOrderItemVOS) {
-        this.newBeeMallOrderItemVOS = newBeeMallOrderItemVOS;
-    }
 }

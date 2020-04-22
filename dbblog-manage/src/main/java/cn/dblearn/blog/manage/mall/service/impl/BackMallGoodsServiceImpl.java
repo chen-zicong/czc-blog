@@ -2,37 +2,33 @@ package cn.dblearn.blog.manage.mall.service.impl;
 
 
 import cn.dblearn.blog.common.mall.ServiceResultEnum;
-import cn.dblearn.blog.common.util.util.BeanUtil;
 import cn.dblearn.blog.common.util.util.PageQueryUtil;
 import cn.dblearn.blog.common.util.util.PageResult;
-import cn.dblearn.blog.entity.mall.NewBeeMallGoods;
-import cn.dblearn.blog.entity.mall.vo.NewBeeMallSearchGoodsVO;
+import cn.dblearn.blog.entity.mall.MallGoods;
 import cn.dblearn.blog.manage.mall.service.BackMallGoodsService;
-import cn.dblearn.blog.mapper.mall.NewBeeMallGoodsMapper;
+import cn.dblearn.blog.mapper.mall.MallGoodsMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class BackMallGoodsServiceImpl implements BackMallGoodsService {
 
     @Autowired
-    private NewBeeMallGoodsMapper goodsMapper;
+    private MallGoodsMapper goodsMapper;
 
     @Override
     public PageResult getNewBeeMallGoodsPage(PageQueryUtil pageUtil) {
-        List<NewBeeMallGoods> goodsList = goodsMapper.findNewBeeMallGoodsList(pageUtil);
+        List<MallGoods> goodsList = goodsMapper.findNewBeeMallGoodsList(pageUtil);
         int total = goodsMapper.getTotalNewBeeMallGoods(pageUtil);
         PageResult pageResult = new PageResult(goodsList, total, pageUtil.getLimit(), pageUtil.getPage());
         return pageResult;
     }
 
     @Override
-    public String saveNewBeeMallGoods(NewBeeMallGoods goods) {
+    public String saveNewBeeMallGoods(MallGoods goods) {
         if (goodsMapper.insertSelective(goods) > 0) {
             return ServiceResultEnum.SUCCESS.getResult();
         }
@@ -42,8 +38,8 @@ public class BackMallGoodsServiceImpl implements BackMallGoodsService {
 
 
     @Override
-    public String updateNewBeeMallGoods(NewBeeMallGoods goods) {
-        NewBeeMallGoods temp = goodsMapper.selectByPrimaryKey(goods.getGoodsId());
+    public String updateNewBeeMallGoods(MallGoods goods) {
+        MallGoods temp = goodsMapper.selectByPrimaryKey(goods.getGoodsId());
         if (temp == null) {
             return ServiceResultEnum.DATA_NOT_EXIST.getResult();
         }
@@ -55,7 +51,7 @@ public class BackMallGoodsServiceImpl implements BackMallGoodsService {
     }
 
     @Override
-    public NewBeeMallGoods getNewBeeMallGoodsById(Long id) {
+    public MallGoods getNewBeeMallGoodsById(Long id) {
         return goodsMapper.selectByPrimaryKey(id);
     }
     

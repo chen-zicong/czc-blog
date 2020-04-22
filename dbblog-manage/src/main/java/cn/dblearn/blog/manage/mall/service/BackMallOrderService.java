@@ -2,11 +2,8 @@ package cn.dblearn.blog.manage.mall.service;
 
 import cn.dblearn.blog.common.util.util.PageQueryUtil;
 import cn.dblearn.blog.common.util.util.PageResult;
-import cn.dblearn.blog.entity.mall.NewBeeMallOrder;
-import cn.dblearn.blog.entity.mall.vo.NewBeeMallOrderDetailVO;
+import cn.dblearn.blog.entity.mall.MallOrder;
 import cn.dblearn.blog.entity.mall.vo.NewBeeMallOrderItemVO;
-import cn.dblearn.blog.entity.mall.vo.NewBeeMallShoppingCartItemVO;
-import cn.dblearn.blog.entity.mall.vo.NewBeeMallUserVO;
 
 import java.util.List;
 
@@ -22,10 +19,10 @@ public interface BackMallOrderService {
     /**
      * 订单信息修改
      *
-     * @param newBeeMallOrder
+     * @param mallOrder
      * @return
      */
-    String updateOrderInfo(NewBeeMallOrder newBeeMallOrder);
+    String updateOrderInfo(MallOrder mallOrder);
 
     /**
      * 配货

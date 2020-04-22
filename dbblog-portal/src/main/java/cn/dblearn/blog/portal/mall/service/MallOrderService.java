@@ -2,15 +2,14 @@ package cn.dblearn.blog.portal.mall.service;
 
 import cn.dblearn.blog.common.util.util.PageQueryUtil;
 import cn.dblearn.blog.common.util.util.PageResult;
-import cn.dblearn.blog.entity.mall.NewBeeMallOrder;
+import cn.dblearn.blog.entity.mall.MallOrder;
 import cn.dblearn.blog.entity.mall.vo.NewBeeMallOrderDetailVO;
-import cn.dblearn.blog.entity.mall.vo.NewBeeMallOrderItemVO;
 import cn.dblearn.blog.entity.mall.vo.NewBeeMallShoppingCartItemVO;
 import cn.dblearn.blog.entity.mall.vo.NewBeeMallUserVO;
 
 import java.util.List;
 
-public interface NewBeeMallOrderService {
+public interface MallOrderService {
 
 
   /**
@@ -28,7 +27,7 @@ public interface NewBeeMallOrderService {
    * @param orderNo
    * @return
    */
-  NewBeeMallOrder getNewBeeMallOrderByOrderNo(String orderNo);
+  MallOrder getNewBeeMallOrderByOrderNo(String orderNo);
 
   /**
    * 我的订单列表

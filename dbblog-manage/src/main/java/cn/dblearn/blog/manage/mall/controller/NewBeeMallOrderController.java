@@ -5,7 +5,7 @@ import cn.dblearn.blog.common.mall.ServiceResultEnum;
 import cn.dblearn.blog.common.util.util.PageQueryUtil;
 import cn.dblearn.blog.common.util.util.Result;
 import cn.dblearn.blog.common.util.util.ResultGenerator;
-import cn.dblearn.blog.entity.mall.NewBeeMallOrder;
+import cn.dblearn.blog.entity.mall.MallOrder;
 import cn.dblearn.blog.entity.mall.vo.NewBeeMallOrderItemVO;
 import cn.dblearn.blog.manage.mall.service.BackMallOrderService;
 import org.springframework.stereotype.Controller;
@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -56,15 +57,15 @@ public class NewBeeMallOrderController {
      */
     @RequestMapping(value = "/orders/update", method = RequestMethod.POST)
     @ResponseBody
-    public Result update(@RequestBody NewBeeMallOrder newBeeMallOrder) {
-        if (Objects.isNull(newBeeMallOrder.getTotalPrice())
-                || Objects.isNull(newBeeMallOrder.getOrderId())
-                || newBeeMallOrder.getOrderId() < 1
-                || newBeeMallOrder.getTotalPrice() < 1
-                || StringUtils.isEmpty(newBeeMallOrder.getUserAddress())) {
+    public Result update(@RequestBody MallOrder mallOrder) {
+        if (Objects.isNull(mallOrder.getTotalPrice())
+                || Objects.isNull(mallOrder.getOrderId())
+                || mallOrder.getOrderId() < 1
+                || mallOrder.getTotalPrice().compareTo(BigDecimal.ZERO)<=0
+                || StringUtils.isEmpty(mallOrder.getUserAddress())) {
             return ResultGenerator.genFailResult("参数异常！");
         }
-        String result = newBeeMallOrderService.updateOrderInfo(newBeeMallOrder);
+        String result = newBeeMallOrderService.updateOrderInfo(mallOrder);
         if (ServiceResultEnum.SUCCESS.getResult().equals(result)) {
             return ResultGenerator.genSuccessResult();
         } else {

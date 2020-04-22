@@ -4,10 +4,10 @@ package cn.dblearn.blog.portal.mall.service.impl;
 import cn.dblearn.blog.common.mall.Constants;
 import cn.dblearn.blog.common.mall.ServiceResultEnum;
 import cn.dblearn.blog.common.util.util.BeanUtil;
-import cn.dblearn.blog.entity.mall.NewBeeMallGoods;
+import cn.dblearn.blog.entity.mall.MallGoods;
 import cn.dblearn.blog.entity.mall.NewBeeMallShoppingCartItem;
 import cn.dblearn.blog.entity.mall.vo.NewBeeMallShoppingCartItemVO;
-import cn.dblearn.blog.mapper.mall.NewBeeMallGoodsMapper;
+import cn.dblearn.blog.mapper.mall.MallGoodsMapper;
 import cn.dblearn.blog.mapper.mall.NewBeeMallShoppingCartItemMapper;
 import cn.dblearn.blog.portal.mall.service.NewBeeMallShoppingCartService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class NewBeeMallShoppingCartServiceImpl implements NewBeeMallShoppingCart
     private NewBeeMallShoppingCartItemMapper newBeeMallShoppingCartItemMapper;
 
     @Autowired
-    private NewBeeMallGoodsMapper newBeeMallGoodsMapper;
+    private MallGoodsMapper mallGoodsMapper;
 
     //todo 修改session中购物项数量
 
@@ -39,9 +39,9 @@ public class NewBeeMallShoppingCartServiceImpl implements NewBeeMallShoppingCart
             temp.setGoodsCount(newBeeMallShoppingCartItem.getGoodsCount());
             return updateNewBeeMallCartItem(temp);
         }
-        NewBeeMallGoods newBeeMallGoods = newBeeMallGoodsMapper.selectByPrimaryKey(newBeeMallShoppingCartItem.getGoodsId());
+        MallGoods mallGoods = mallGoodsMapper.selectByPrimaryKey(newBeeMallShoppingCartItem.getGoodsId());
         //商品为空
-        if (newBeeMallGoods == null) {
+        if (mallGoods == null) {
             return ServiceResultEnum.GOODS_NOT_EXIST.getResult();
         }
         int totalItem = newBeeMallShoppingCartItemMapper.selectCountByUserId(newBeeMallShoppingCartItem.getUserId()) + 1;
@@ -96,24 +96,24 @@ public class NewBeeMallShoppingCartServiceImpl implements NewBeeMallShoppingCart
         if (!CollectionUtils.isEmpty(newBeeMallShoppingCartItems)) {
             //查询商品信息并做数据转换
             List<Long> newBeeMallGoodsIds = newBeeMallShoppingCartItems.stream().map(NewBeeMallShoppingCartItem::getGoodsId).collect(Collectors.toList());
-            List<NewBeeMallGoods> newBeeMallGoods = newBeeMallGoodsMapper.selectByPrimaryKeys(newBeeMallGoodsIds);
-            Map<Long, NewBeeMallGoods> newBeeMallGoodsMap = new HashMap<>();
-            if (!CollectionUtils.isEmpty(newBeeMallGoods)) {
-                newBeeMallGoodsMap = newBeeMallGoods.stream().collect(Collectors.toMap(NewBeeMallGoods::getGoodsId, Function.identity(), (entity1, entity2) -> entity1));
+            List<MallGoods> mallGoods = mallGoodsMapper.selectByPrimaryKeys(newBeeMallGoodsIds);
+            Map<Long, MallGoods> newBeeMallGoodsMap = new HashMap<>();
+            if (!CollectionUtils.isEmpty(mallGoods)) {
+                newBeeMallGoodsMap = mallGoods.stream().collect(Collectors.toMap(MallGoods::getGoodsId, Function.identity(), (entity1, entity2) -> entity1));
             }
             for (NewBeeMallShoppingCartItem newBeeMallShoppingCartItem : newBeeMallShoppingCartItems) {
                 NewBeeMallShoppingCartItemVO newBeeMallShoppingCartItemVO = new NewBeeMallShoppingCartItemVO();
                 BeanUtil.copyProperties(newBeeMallShoppingCartItem, newBeeMallShoppingCartItemVO);
                 if (newBeeMallGoodsMap.containsKey(newBeeMallShoppingCartItem.getGoodsId())) {
-                    NewBeeMallGoods newBeeMallGoodsTemp = newBeeMallGoodsMap.get(newBeeMallShoppingCartItem.getGoodsId());
-                    newBeeMallShoppingCartItemVO.setGoodsCoverImg(newBeeMallGoodsTemp.getGoodsCoverImg());
-                    String goodsName = newBeeMallGoodsTemp.getGoodsName();
+                    MallGoods mallGoodsTemp = newBeeMallGoodsMap.get(newBeeMallShoppingCartItem.getGoodsId());
+                    newBeeMallShoppingCartItemVO.setGoodsCoverImg(mallGoodsTemp.getGoodsCoverImg());
+                    String goodsName = mallGoodsTemp.getGoodsName();
                     // 字符串过长导致文字超出的问题
                     if (goodsName.length() > 28) {
                         goodsName = goodsName.substring(0, 28) + "...";
                     }
                     newBeeMallShoppingCartItemVO.setGoodsName(goodsName);
-                    newBeeMallShoppingCartItemVO.setSellingPrice(newBeeMallGoodsTemp.getSellingPrice());
+                    newBeeMallShoppingCartItemVO.setSellingPrice(mallGoodsTemp.getSellingPrice().toString());
                     newBeeMallShoppingCartItemVOS.add(newBeeMallShoppingCartItemVO);
                 }
             }

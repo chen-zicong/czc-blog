@@ -1,38 +1,29 @@
 package cn.dblearn.blog.mapper.mall;
 
-import cn.dblearn.blog.common.util.util.PageQueryUtil;
-import cn.dblearn.blog.entity.mall.MallUser;
+import cn.dblearn.blog.common.util.util.PageQueryUtil;import cn.dblearn.blog.entity.mall.MallUser;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.springframework.stereotype.Repository;
-
-import java.util.List;
-@Repository
+import org.apache.ibatis.annotations.Param;import java.util.List;
 @Mapper
 public interface MallUserMapper {
-    int deleteByPrimaryKey(Long userId);
+  int deleteByPrimaryKey(Long userId);
 
-    int insert(MallUser record);
+  int insert(MallUser record);
 
-    int insertSelective(MallUser record);
+  int insertSelective(MallUser record);
 
-    MallUser selectByPrimaryKey(Long userId);
+  MallUser selectByPrimaryKey(Long userId);
 
-    int updateByPrimaryKeySelective(MallUser record);
+  int updateByPrimaryKeySelective(MallUser record);
 
-    int updateByPrimaryKey(MallUser record);
+  int updateByPrimaryKey(MallUser record);
 
+  MallUser selectByLoginName(String loginName);
 
+  MallUser selectByLoginNameAndPasswd(@Param("loginName") String loginName, @Param("password") String password);
 
-    MallUser selectByLoginName(String loginName);
+  List<MallUser> findMallUserList(PageQueryUtil pageUtil);
 
-    MallUser selectByLoginNameAndPasswd(@Param("loginName") String loginName, @Param("password") String password);
+  int getTotalMallUsers(PageQueryUtil pageUtil);
 
-
-
-    List<MallUser> findMallUserList(PageQueryUtil pageUtil);
-
-    int getTotalMallUsers(PageQueryUtil pageUtil);
-
-    int lockUserBatch(@Param("ids") Integer[] ids, @Param("lockStatus") int lockStatus);
+  int lockUserBatch(@Param("ids") Integer[] ids, @Param("lockStatus") int lockStatus);
 }

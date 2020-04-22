@@ -2,11 +2,9 @@ package cn.dblearn.blog.portal.mall.service;
 
 import cn.dblearn.blog.common.util.util.PageQueryUtil;
 import cn.dblearn.blog.common.util.util.PageResult;
-import cn.dblearn.blog.entity.mall.NewBeeMallGoods;
+import cn.dblearn.blog.entity.mall.MallGoods;
 
-import java.util.List;
-
-public interface NewBeeMallGoodsService {
+public interface MallGoodsService {
 
 
     /**
@@ -15,7 +13,7 @@ public interface NewBeeMallGoodsService {
      * @param id
      * @return
      */
-    NewBeeMallGoods getNewBeeMallGoodsById(Long id);
+    MallGoods getNewBeeMallGoodsById(Long id);
 
 
 

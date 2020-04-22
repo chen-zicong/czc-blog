@@ -2,23 +2,17 @@ package cn.dblearn.blog.manage.mall.service.impl;
 
 
 import cn.dblearn.blog.common.mall.ServiceResultEnum;
-import cn.dblearn.blog.common.util.util.BeanUtil;
 import cn.dblearn.blog.common.util.util.PageQueryUtil;
 import cn.dblearn.blog.common.util.util.PageResult;
 import cn.dblearn.blog.entity.mall.IndexConfig;
-import cn.dblearn.blog.entity.mall.NewBeeMallGoods;
-import cn.dblearn.blog.entity.mall.vo.NewBeeMallIndexConfigGoodsVO;
 import cn.dblearn.blog.manage.mall.service.BackMallIndexConfigService;
 import cn.dblearn.blog.mapper.mall.IndexConfigMapper;
-import cn.dblearn.blog.mapper.mall.NewBeeMallGoodsMapper;
+import cn.dblearn.blog.mapper.mall.MallGoodsMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class BackMallIndexConfigServiceImpl implements BackMallIndexConfigService {
@@ -27,7 +21,7 @@ public class BackMallIndexConfigServiceImpl implements BackMallIndexConfigServic
     private IndexConfigMapper indexConfigMapper;
 
     @Autowired
-    private NewBeeMallGoodsMapper goodsMapper;
+    private MallGoodsMapper goodsMapper;
 
     @Override
     public PageResult getConfigsPage(PageQueryUtil pageUtil) {

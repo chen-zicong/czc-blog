@@ -10,13 +10,7 @@ import cn.dblearn.blog.entity.mall.vo.NewBeeMallUserVO;
 import javax.servlet.http.HttpSession;
 
 public interface NewBeeMallUserService {
-    /**
-     * 后台分页
-     *
-     * @param pageUtil
-     * @return
-     */
-    PageResult getNewBeeMallUsersPage(PageQueryUtil pageUtil);
+
 
     /**
      * 用户注册
@@ -45,12 +39,5 @@ public interface NewBeeMallUserService {
      */
     NewBeeMallUserVO updateUserInfo(MallUser mallUser, HttpSession httpSession);
 
-    /**
-     * 用户禁用与解除禁用(0-未锁定 1-已锁定)
-     *
-     * @param ids
-     * @param lockStatus
-     * @return
-     */
-    Boolean lockUsers(Integer[] ids, int lockStatus);
+
 }

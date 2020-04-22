@@ -23,13 +23,6 @@ public class NewBeeMallUserServiceImpl implements NewBeeMallUserService {
     @Autowired
     private MallUserMapper mallUserMapper;
 
-    @Override
-    public PageResult getNewBeeMallUsersPage(PageQueryUtil pageUtil) {
-        List<MallUser> mallUsers = mallUserMapper.findMallUserList(pageUtil);
-        int total = mallUserMapper.getTotalMallUsers(pageUtil);
-        PageResult pageResult = new PageResult(mallUsers, total, pageUtil.getLimit(), pageUtil.getPage());
-        return pageResult;
-    }
 
     @Override
     public String register(String loginName, String password) {
@@ -86,11 +79,4 @@ public class NewBeeMallUserServiceImpl implements NewBeeMallUserService {
         return null;
     }
 
-    @Override
-    public Boolean lockUsers(Integer[] ids, int lockStatus) {
-        if (ids.length < 1) {
-            return false;
-        }
-        return mallUserMapper.lockUserBatch(ids, lockStatus) > 0;
-    }
 }

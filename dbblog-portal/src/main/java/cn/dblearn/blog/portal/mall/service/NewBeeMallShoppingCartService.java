@@ -24,13 +24,7 @@ public interface NewBeeMallShoppingCartService {
      */
     String updateNewBeeMallCartItem(NewBeeMallShoppingCartItem newBeeMallShoppingCartItem);
 
-    /**
-     * 获取购物项详情
-     *
-     * @param newBeeMallShoppingCartItemId
-     * @return
-     */
-    NewBeeMallShoppingCartItem getNewBeeMallCartItemById(Long newBeeMallShoppingCartItemId);
+
 
     /**
      * 删除购物车中的商品

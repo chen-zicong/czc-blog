@@ -9,8 +9,8 @@ import cn.dblearn.blog.common.util.util.Result;
 import cn.dblearn.blog.common.util.util.ResultGenerator;
 import cn.dblearn.blog.entity.mall.GoodsCategory;
 import cn.dblearn.blog.entity.mall.NewBeeMallGoods;
-import cn.dblearn.blog.portal.mall.service.NewBeeMallCategoryService;
-import cn.dblearn.blog.portal.mall.service.NewBeeMallGoodsService;
+import cn.dblearn.blog.manage.mall.service.BackMallCategoryService;
+import cn.dblearn.blog.manage.mall.service.BackMallGoodsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -34,9 +34,9 @@ import java.util.Objects;
 public class NewBeeMallGoodsController {
 
     @Resource
-    private NewBeeMallGoodsService newBeeMallGoodsService;
+    private BackMallGoodsService newBeeMallGoodsService;
     @Resource
-    private NewBeeMallCategoryService newBeeMallCategoryService;
+    private BackMallCategoryService newBeeMallCategoryService;
 
     @GetMapping("/goods")
     public String goodsPage(HttpServletRequest request) {

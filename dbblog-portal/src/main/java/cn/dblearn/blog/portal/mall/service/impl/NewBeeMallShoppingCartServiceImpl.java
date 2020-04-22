@@ -81,10 +81,7 @@ public class NewBeeMallShoppingCartServiceImpl implements NewBeeMallShoppingCart
         return ServiceResultEnum.DB_ERROR.getResult();
     }
 
-    @Override
-    public NewBeeMallShoppingCartItem getNewBeeMallCartItemById(Long newBeeMallShoppingCartItemId) {
-        return newBeeMallShoppingCartItemMapper.selectByPrimaryKey(newBeeMallShoppingCartItemId);
-    }
+
 
     @Override
     public Boolean deleteById(Long newBeeMallShoppingCartItemId) {

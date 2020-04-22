@@ -1,15 +1,15 @@
-package cn.dblearn.blog.portal.mall.service.impl;
+package cn.dblearn.blog.manage.mall.service.impl;
 
 import cn.dblearn.blog.common.util.util.MD5Util;
 import cn.dblearn.blog.entity.mall.AdminUser;
+import cn.dblearn.blog.manage.mall.service.BackAdminUserService;
 import cn.dblearn.blog.mapper.mall.AdminUserMapper;
-import cn.dblearn.blog.portal.mall.service.AdminUserService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 
 @Service
-public class AdminUserServiceImpl implements AdminUserService {
+public class BackAdminUserServiceImpl implements BackAdminUserService {
 
     @Resource
     private AdminUserMapper adminUserMapper;

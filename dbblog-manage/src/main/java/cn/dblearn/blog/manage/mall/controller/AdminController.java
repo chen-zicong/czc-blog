@@ -3,7 +3,7 @@ package cn.dblearn.blog.manage.mall.controller;
 
 import cn.dblearn.blog.common.mall.ServiceResultEnum;
 import cn.dblearn.blog.entity.mall.AdminUser;
-import cn.dblearn.blog.portal.mall.service.AdminUserService;
+import cn.dblearn.blog.manage.mall.service.BackAdminUserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +23,7 @@ import javax.servlet.http.HttpSession;
 public class AdminController {
 
   @Resource
-  private AdminUserService adminUserService;
+  private BackAdminUserService adminUserService;
 
   @GetMapping({"/login"})
   public String login() {

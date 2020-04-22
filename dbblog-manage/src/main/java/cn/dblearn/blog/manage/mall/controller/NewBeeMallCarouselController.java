@@ -6,7 +6,7 @@ import cn.dblearn.blog.common.util.util.PageQueryUtil;
 import cn.dblearn.blog.common.util.util.Result;
 import cn.dblearn.blog.common.util.util.ResultGenerator;
 import cn.dblearn.blog.entity.mall.Carousel;
-import cn.dblearn.blog.portal.mall.service.NewBeeMallCarouselService;
+import cn.dblearn.blog.manage.mall.service.BackMallCarouselService;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +27,7 @@ import java.util.Objects;
 public class NewBeeMallCarouselController {
 
     @Resource
-    NewBeeMallCarouselService newBeeMallCarouselService;
+    BackMallCarouselService newBeeMallCarouselService;
 
     @GetMapping("/carousels")
     public String carouselPage(HttpServletRequest request) {

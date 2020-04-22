@@ -7,7 +7,7 @@ import cn.dblearn.blog.common.util.util.Result;
 import cn.dblearn.blog.common.util.util.ResultGenerator;
 import cn.dblearn.blog.entity.mall.NewBeeMallOrder;
 import cn.dblearn.blog.entity.mall.vo.NewBeeMallOrderItemVO;
-import cn.dblearn.blog.portal.mall.service.NewBeeMallOrderService;
+import cn.dblearn.blog.manage.mall.service.BackMallOrderService;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -30,7 +30,7 @@ import java.util.Objects;
 public class NewBeeMallOrderController {
 
     @Resource
-    private NewBeeMallOrderService newBeeMallOrderService;
+    private BackMallOrderService newBeeMallOrderService;
 
     @GetMapping("/orders")
     public String ordersPage(HttpServletRequest request) {

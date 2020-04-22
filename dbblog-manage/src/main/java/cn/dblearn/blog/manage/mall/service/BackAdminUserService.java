@@ -1,9 +1,9 @@
-package cn.dblearn.blog.portal.mall.service;
+package cn.dblearn.blog.manage.mall.service;
 
 
 import cn.dblearn.blog.entity.mall.AdminUser;
 
-public interface AdminUserService {
+public interface BackAdminUserService {
 
     AdminUser login(String userName, String password);
 

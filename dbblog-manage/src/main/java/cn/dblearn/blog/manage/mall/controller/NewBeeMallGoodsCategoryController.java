@@ -7,7 +7,7 @@ import cn.dblearn.blog.common.util.util.Result;
 import cn.dblearn.blog.common.util.util.ResultGenerator;
 
 import cn.dblearn.blog.entity.mall.GoodsCategory;
-import cn.dblearn.blog.portal.mall.service.NewBeeMallCategoryService;
+import cn.dblearn.blog.manage.mall.service.BackMallCategoryService;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -28,7 +28,7 @@ import java.util.*;
 public class NewBeeMallGoodsCategoryController {
 
     @Resource
-    private NewBeeMallCategoryService newBeeMallCategoryService;
+    private BackMallCategoryService newBeeMallCategoryService;
 
     @GetMapping("/categories")
     public String categoriesPage(HttpServletRequest request, @RequestParam("categoryLevel") Byte categoryLevel, @RequestParam("parentId") Long parentId, @RequestParam("backParentId") Long backParentId) {

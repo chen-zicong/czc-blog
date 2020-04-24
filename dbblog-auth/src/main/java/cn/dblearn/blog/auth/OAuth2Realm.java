@@ -15,13 +15,11 @@ import java.util.Set;
 
 
 /**
- * OAuth2Realm
- *
- * @author bobbi
- * @date 2018/10/07 16:39
- * @email 571002217@qq.com
- * @description Shiro 认证类
- */
+* <p>Title: </p>
+* <p>Description: </p>
+* @author: chenzicong
+* @create: 2020/4/24 10:59
+*/
 @Component
 public class OAuth2Realm extends AuthorizingRealm {
 

@@ -1,6 +1,7 @@
 package cn.dblearn.blog.portal.mall.controller;
 
 
+import cn.dblearn.blog.auth.controller.BaseController;
 import cn.dblearn.blog.common.mall.Constants;
 import cn.dblearn.blog.common.mall.ServiceResultEnum;
 import cn.dblearn.blog.common.util.util.Result;
@@ -21,7 +22,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Controller
-public class ShoppingCartController {
+public class ShoppingCartController  extends BaseController {
 
   @Resource
   private NewBeeMallShoppingCartService newBeeMallShoppingCartService;
@@ -29,23 +30,19 @@ public class ShoppingCartController {
   @GetMapping("/shop-cart")
   public Result<ShoppingVo> cartListPage(HttpServletRequest request,
                                          HttpSession httpSession) {
-    NewBeeMallUserVO user = (NewBeeMallUserVO) httpSession.getAttribute(Constants.MALL_USER_SESSION_KEY);
+
     int itemsTotal = 0;
     BigDecimal priceTotal = BigDecimal.ZERO;
-    List<NewBeeMallShoppingCartItemVO> myShoppingCartItems = newBeeMallShoppingCartService.getMyShoppingCartItems(user.getUserId());
+    List<NewBeeMallShoppingCartItemVO> myShoppingCartItems = newBeeMallShoppingCartService.getMyShoppingCartItems(getUser().getUserId());
     if (!CollectionUtils.isEmpty(myShoppingCartItems)) {
       //购物项总数
       itemsTotal = myShoppingCartItems.stream().mapToInt(NewBeeMallShoppingCartItemVO::getGoodsCount).sum();
-//            if (itemsTotal < 1) {
-//                return "error/error_5xx";
-//            }
+
       //总价
       for (NewBeeMallShoppingCartItemVO newBeeMallShoppingCartItemVO : myShoppingCartItems) {
         priceTotal.add(BigDecimal.valueOf(newBeeMallShoppingCartItemVO.getGoodsCount()).multiply(new BigDecimal(newBeeMallShoppingCartItemVO.getSellingPrice())));
       }
-//            if (priceTotal < 1) {
-//                return "error/error_5xx";
-//            }
+
     }
     ShoppingVo shoppingVo = new ShoppingVo();
     shoppingVo.setMyShoppingCartItems(myShoppingCartItems);
@@ -57,10 +54,8 @@ public class ShoppingCartController {
 
   @PostMapping("/shop-cart")
   @ResponseBody
-  public Result saveNewBeeMallShoppingCartItem(@RequestBody NewBeeMallShoppingCartItem newBeeMallShoppingCartItem,
-                                               HttpSession httpSession) {
-    NewBeeMallUserVO user = (NewBeeMallUserVO) httpSession.getAttribute(Constants.MALL_USER_SESSION_KEY);
-    newBeeMallShoppingCartItem.setUserId(user.getUserId());
+  public Result saveNewBeeMallShoppingCartItem(@RequestBody NewBeeMallShoppingCartItem newBeeMallShoppingCartItem) {
+    newBeeMallShoppingCartItem.setUserId(getUser().getUserId());
     //todo 判断数量
     String saveResult = newBeeMallShoppingCartService.saveNewBeeMallCartItem(newBeeMallShoppingCartItem);
     //添加成功
@@ -75,8 +70,8 @@ public class ShoppingCartController {
   @ResponseBody
   public Result updateNewBeeMallShoppingCartItem(@RequestBody NewBeeMallShoppingCartItem newBeeMallShoppingCartItem,
                                                  HttpSession httpSession) {
-    NewBeeMallUserVO user = (NewBeeMallUserVO) httpSession.getAttribute(Constants.MALL_USER_SESSION_KEY);
-    newBeeMallShoppingCartItem.setUserId(user.getUserId());
+
+    newBeeMallShoppingCartItem.setUserId(getUser().getUserId());
     //todo 判断数量
     String updateResult = newBeeMallShoppingCartService.updateNewBeeMallCartItem(newBeeMallShoppingCartItem);
     //修改成功
@@ -91,7 +86,6 @@ public class ShoppingCartController {
   @ResponseBody
   public Result updateNewBeeMallShoppingCartItem(@PathVariable("newBeeMallShoppingCartItemId") Long newBeeMallShoppingCartItemId,
                                                  HttpSession httpSession) {
-    NewBeeMallUserVO user = (NewBeeMallUserVO) httpSession.getAttribute(Constants.MALL_USER_SESSION_KEY);
     Boolean deleteResult = newBeeMallShoppingCartService.deleteById(newBeeMallShoppingCartItemId);
     //删除成功
     if (deleteResult) {
@@ -101,26 +95,5 @@ public class ShoppingCartController {
     return ResultGenerator.genFailResult(ServiceResultEnum.OPERATE_ERROR.getResult());
   }
 
-  @GetMapping("/shop-cart/settle")
-  public String settlePage(HttpServletRequest request,
-                           HttpSession httpSession) {
-    BigDecimal priceTotal = BigDecimal.ZERO;
-    NewBeeMallUserVO user = (NewBeeMallUserVO) httpSession.getAttribute(Constants.MALL_USER_SESSION_KEY);
-    List<NewBeeMallShoppingCartItemVO> myShoppingCartItems = newBeeMallShoppingCartService.getMyShoppingCartItems(user.getUserId());
-    if (CollectionUtils.isEmpty(myShoppingCartItems)) {
-      //无数据则不跳转至结算页
-      return "/shop-cart";
-    } else {
-      //总价
-      for (NewBeeMallShoppingCartItemVO newBeeMallShoppingCartItemVO : myShoppingCartItems) {
-        priceTotal.add(BigDecimal.valueOf(newBeeMallShoppingCartItemVO.getGoodsCount()).multiply(new BigDecimal(newBeeMallShoppingCartItemVO.getSellingPrice())));
-      }
-      if (priceTotal.compareTo(BigDecimal.ZERO) <= 0) {
-        return "error/error_5xx";
-      }
-    }
-    request.setAttribute("priceTotal", priceTotal);
-    request.setAttribute("myShoppingCartItems", myShoppingCartItems);
-    return "mall/order-settle";
-  }
+
 }

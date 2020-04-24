@@ -14,11 +14,11 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 /**
- * @author 13
- * @qq交流群 796794009
- * @email 2449207463@qq.com
- * @link https://github.com/newbee-ltd
- */
+* <p>Title: </p>
+* <p>Description: </p>
+* @author: chenzicong
+* @create: 2020/4/24 11:23
+*/
 @Controller
 @RequestMapping("/admin")
 public class NewBeeMallUserController {

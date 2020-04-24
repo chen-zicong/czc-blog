@@ -11,6 +11,10 @@ import cn.dblearn.blog.entity.mall.GoodsCategory;
 import cn.dblearn.blog.entity.mall.MallGoods;
 import cn.dblearn.blog.manage.mall.service.BackMallCategoryService;
 import cn.dblearn.blog.manage.mall.service.BackMallGoodsService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -24,109 +28,31 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * @author 13
- * @qq交流群 796794009
- * @email 2449207463@qq.com
- * @link https://github.com/newbee-ltd
- */
+* <p>Title: </p>
+* <p>Description: </p>
+* @author: chenzicong
+* @create: 2020/4/24 11:16
+*/
 @Controller
-@RequestMapping("/admin")
+@RequestMapping("/mall/admin")
+@Api(tags = "后台商品管理")
 public class MallGoodsController {
 
     @Resource
     private BackMallGoodsService newBeeMallGoodsService;
-    @Resource
-    private BackMallCategoryService newBeeMallCategoryService;
 
-    @GetMapping("/goods")
-    public String goodsPage(HttpServletRequest request) {
-        request.setAttribute("path", "newbee_mall_goods");
-        return "admin/newbee_mall_goods";
-    }
 
-    @GetMapping("/goods/edit")
-    public String edit(HttpServletRequest request) {
-        request.setAttribute("path", "edit");
-        //查询所有的一级分类
-        List<GoodsCategory> firstLevelCategories = newBeeMallCategoryService.selectByLevelAndParentIdsAndNumber(Collections.singletonList(0L), NewBeeMallCategoryLevelEnum.LEVEL_ONE.getLevel());
-        if (!CollectionUtils.isEmpty(firstLevelCategories)) {
-            //查询一级分类列表中第一个实体的所有二级分类
-            List<GoodsCategory> secondLevelCategories = newBeeMallCategoryService.selectByLevelAndParentIdsAndNumber(Collections.singletonList(firstLevelCategories.get(0).getCategoryId()), NewBeeMallCategoryLevelEnum.LEVEL_TWO.getLevel());
-            if (!CollectionUtils.isEmpty(secondLevelCategories)) {
-                //查询二级分类列表中第一个实体的所有三级分类
-                List<GoodsCategory> thirdLevelCategories = newBeeMallCategoryService.selectByLevelAndParentIdsAndNumber(Collections.singletonList(secondLevelCategories.get(0).getCategoryId()), NewBeeMallCategoryLevelEnum.LEVEL_THREE.getLevel());
-                request.setAttribute("firstLevelCategories", firstLevelCategories);
-                request.setAttribute("secondLevelCategories", secondLevelCategories);
-                request.setAttribute("thirdLevelCategories", thirdLevelCategories);
-                request.setAttribute("path", "goods-edit");
-                return "admin/newbee_mall_goods_edit";
-            }
-        }
-        return "error/error_5xx";
-    }
-
-    @GetMapping("/goods/edit/{goodsId}")
-    public String edit(HttpServletRequest request, @PathVariable("goodsId") Long goodsId) {
-        request.setAttribute("path", "edit");
-        MallGoods mallGoods = newBeeMallGoodsService.getNewBeeMallGoodsById(goodsId);
-        if (mallGoods == null) {
-            return "error/error_400";
-        }
-        if (mallGoods.getGoodsCategoryId() > 0) {
-            if (mallGoods.getGoodsCategoryId() != null || mallGoods.getGoodsCategoryId() > 0) {
-                //有分类字段则查询相关分类数据返回给前端以供分类的三级联动显示
-                GoodsCategory currentGoodsCategory = newBeeMallCategoryService.getGoodsCategoryById(mallGoods.getGoodsCategoryId());
-                //商品表中存储的分类id字段为三级分类的id，不为三级分类则是错误数据
-                if (currentGoodsCategory != null && currentGoodsCategory.getCategoryLevel() == NewBeeMallCategoryLevelEnum.LEVEL_THREE.getLevel()) {
-                    //查询所有的一级分类
-                    List<GoodsCategory> firstLevelCategories = newBeeMallCategoryService.selectByLevelAndParentIdsAndNumber(Collections.singletonList(0L), NewBeeMallCategoryLevelEnum.LEVEL_ONE.getLevel());
-                    //根据parentId查询当前parentId下所有的三级分类
-                    List<GoodsCategory> thirdLevelCategories = newBeeMallCategoryService.selectByLevelAndParentIdsAndNumber(Collections.singletonList(currentGoodsCategory.getParentId()), NewBeeMallCategoryLevelEnum.LEVEL_THREE.getLevel());
-                    //查询当前三级分类的父级二级分类
-                    GoodsCategory secondCategory = newBeeMallCategoryService.getGoodsCategoryById(currentGoodsCategory.getParentId());
-                    if (secondCategory != null) {
-                        //根据parentId查询当前parentId下所有的二级分类
-                        List<GoodsCategory> secondLevelCategories = newBeeMallCategoryService.selectByLevelAndParentIdsAndNumber(Collections.singletonList(secondCategory.getParentId()), NewBeeMallCategoryLevelEnum.LEVEL_TWO.getLevel());
-                        //查询当前二级分类的父级一级分类
-                        GoodsCategory firestCategory = newBeeMallCategoryService.getGoodsCategoryById(secondCategory.getParentId());
-                        if (firestCategory != null) {
-                            //所有分类数据都得到之后放到request对象中供前端读取
-                            request.setAttribute("firstLevelCategories", firstLevelCategories);
-                            request.setAttribute("secondLevelCategories", secondLevelCategories);
-                            request.setAttribute("thirdLevelCategories", thirdLevelCategories);
-                            request.setAttribute("firstLevelCategoryId", firestCategory.getCategoryId());
-                            request.setAttribute("secondLevelCategoryId", secondCategory.getCategoryId());
-                            request.setAttribute("thirdLevelCategoryId", currentGoodsCategory.getCategoryId());
-                        }
-                    }
-                }
-            }
-        }
-        if (mallGoods.getGoodsCategoryId() == 0) {
-            //查询所有的一级分类
-            List<GoodsCategory> firstLevelCategories = newBeeMallCategoryService.selectByLevelAndParentIdsAndNumber(Collections.singletonList(0L), NewBeeMallCategoryLevelEnum.LEVEL_ONE.getLevel());
-            if (!CollectionUtils.isEmpty(firstLevelCategories)) {
-                //查询一级分类列表中第一个实体的所有二级分类
-                List<GoodsCategory> secondLevelCategories = newBeeMallCategoryService.selectByLevelAndParentIdsAndNumber(Collections.singletonList(firstLevelCategories.get(0).getCategoryId()), NewBeeMallCategoryLevelEnum.LEVEL_TWO.getLevel());
-                if (!CollectionUtils.isEmpty(secondLevelCategories)) {
-                    //查询二级分类列表中第一个实体的所有三级分类
-                    List<GoodsCategory> thirdLevelCategories = newBeeMallCategoryService.selectByLevelAndParentIdsAndNumber(Collections.singletonList(secondLevelCategories.get(0).getCategoryId()), NewBeeMallCategoryLevelEnum.LEVEL_THREE.getLevel());
-                    request.setAttribute("firstLevelCategories", firstLevelCategories);
-                    request.setAttribute("secondLevelCategories", secondLevelCategories);
-                    request.setAttribute("thirdLevelCategories", thirdLevelCategories);
-                }
-            }
-        }
-        request.setAttribute("goods", mallGoods);
-        request.setAttribute("path", "goods-edit");
-        return "admin/newbee_mall_goods_edit";
-    }
 
     /**
      * 列表
      */
     @RequestMapping(value = "/goods/list", method = RequestMethod.GET)
     @ResponseBody
+    @ApiOperation("商品列表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "page", value = "当前页", paramType = "query", dataType = "int"),
+            @ApiImplicitParam(name = "limit", value = "页面大小", paramType = "query", dataType = "int"),
+    })
     public Result list(@RequestParam Map<String, Object> params) {
         if (StringUtils.isEmpty(params.get("page")) || StringUtils.isEmpty(params.get("limit"))) {
             return ResultGenerator.genFailResult("参数异常！");
@@ -140,6 +66,7 @@ public class MallGoodsController {
      */
     @RequestMapping(value = "/goods/save", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation("添加商品")
     public Result save(@RequestBody MallGoods mallGoods) {
         if (StringUtils.isEmpty(mallGoods.getGoodsName())
                 || StringUtils.isEmpty(mallGoods.getGoodsIntro())
@@ -167,6 +94,7 @@ public class MallGoodsController {
      */
     @RequestMapping(value = "/goods/update", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation("修改商品")
     public Result update(@RequestBody MallGoods mallGoods) {
         if (Objects.isNull(mallGoods.getGoodsId())
                 || StringUtils.isEmpty(mallGoods.getGoodsName())
@@ -194,6 +122,7 @@ public class MallGoodsController {
      */
     @GetMapping("/goods/info/{id}")
     @ResponseBody
+    @ApiOperation("商品详情")
     public Result info(@PathVariable("id") Long id) {
         MallGoods goods = newBeeMallGoodsService.getNewBeeMallGoodsById(id);
         if (goods == null) {

@@ -36,8 +36,8 @@ public class SwaggerConfig implements WebMvcConfigurer {
             .apiInfo(apiInfo())
             .select()
             //加了ApiOperation注解的类，才生成接口文档
-           // .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
-            .apis(RequestHandlerSelectors.any())
+            .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
+           // .apis(RequestHandlerSelectors.any())
             // .paths(PathSelectors.any())
             .paths(PathSelectors.regex("/.*"))
             .build();

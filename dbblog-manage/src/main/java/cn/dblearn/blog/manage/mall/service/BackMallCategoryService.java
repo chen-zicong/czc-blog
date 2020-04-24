@@ -19,6 +19,14 @@ public interface BackMallCategoryService {
      */
     PageResult getCategorisPage(PageQueryUtil pageUtil);
 
+    /**
+     * 返回分类数据(首页调用)
+     *
+     * @return
+     */
+    List<NewBeeMallIndexCategoryVO> getCategoriesForIndex();
+
+
     String saveCategory(GoodsCategory goodsCategory);
 
     String updateGoodsCategory(GoodsCategory goodsCategory);

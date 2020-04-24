@@ -6,10 +6,7 @@ import cn.dblearn.blog.common.util.util.BeanUtil;
 import cn.dblearn.blog.common.util.util.NumberUtil;
 import cn.dblearn.blog.common.util.util.PageQueryUtil;
 import cn.dblearn.blog.common.util.util.PageResult;
-import cn.dblearn.blog.entity.mall.MallGoods;
-import cn.dblearn.blog.entity.mall.MallOrder;
-import cn.dblearn.blog.entity.mall.NewBeeMallOrderItem;
-import cn.dblearn.blog.entity.mall.StockNumDTO;
+import cn.dblearn.blog.entity.mall.*;
 import cn.dblearn.blog.entity.mall.vo.*;
 import cn.dblearn.blog.mapper.mall.MallGoodsMapper;
 import cn.dblearn.blog.mapper.mall.NewBeeMallOrderItemMapper;
@@ -154,7 +151,7 @@ public class MallOrderServiceImpl implements MallOrderService {
 
   @Override
   @Transactional
-  public String saveOrder(NewBeeMallUserVO user, List<NewBeeMallShoppingCartItemVO> myShoppingCartItems) {
+  public String saveOrder(MallUser user, List<NewBeeMallShoppingCartItemVO> myShoppingCartItems) {
     List<Long> itemIdList = myShoppingCartItems.stream().map(NewBeeMallShoppingCartItemVO::getCartItemId).collect(Collectors.toList());
     List<Long> goodsIds = myShoppingCartItems.stream().map(NewBeeMallShoppingCartItemVO::getGoodsId).collect(Collectors.toList());
     List<MallGoods> mallGoods = mallGoodsMapper.selectByPrimaryKeys(goodsIds);
@@ -193,7 +190,7 @@ public class MallOrderServiceImpl implements MallOrderService {
         MallOrder mallOrder = new MallOrder();
         mallOrder.setOrderNo(orderNo);
         mallOrder.setUserId(user.getUserId());
-        mallOrder.setUserAddress(user.getAddress());
+        mallOrder.setUserAddress(user.getProvince()+user.getCity()+user.getArea()+user.getAddress());
         //总价
         for (NewBeeMallShoppingCartItemVO newBeeMallShoppingCartItemVO : myShoppingCartItems) {
           priceTotal.add(new BigDecimal(newBeeMallShoppingCartItemVO.getSellingPrice()).multiply(BigDecimal.valueOf(newBeeMallShoppingCartItemVO.getGoodsCount())));

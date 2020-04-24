@@ -12,6 +12,9 @@ import cn.dblearn.blog.entity.article.dto.ArticleDTO;
 import cn.dblearn.blog.entity.mall.MallUser;
 import cn.dblearn.blog.manage.article.service.ArticleService;
 import cn.dblearn.blog.manage.operation.service.RecommendService;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
@@ -66,11 +69,15 @@ public class ArticleController extends BaseController {
   //@RequiresPermissions("article:save")
   @CacheEvict(allEntries = true)
   @RefreshEsMqSender(sender = "dbblog-manage-saveArticle")
+  @ApiOperation(value = "保存文章")
+  @ApiImplicitParams({
+          @ApiImplicitParam(name ="token", value = "token", paramType = "header", required = true),
+  })
   public Result saveArticle(@RequestBody ArticleDTO article) {
 
     ValidatorUtils.validateEntity(article);
-  //  MallUser user = getUser();
-    //article.setUserId(user.getUserId());
+    MallUser user = getUser();
+    article.setUserId(user.getUserId());
     article.setPublish(true);
     articleService.saveArticle(article);
     return Result.ok();

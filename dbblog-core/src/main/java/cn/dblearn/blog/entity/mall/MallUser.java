@@ -52,22 +52,43 @@ public class MallUser implements Serializable {
   private Byte isDeleted;
 
   /**
-   * 锁定标识字段(0-未锁定 1-已锁定)
-   */
-  @ApiModelProperty(value = "锁定标识字段(0-未锁定 1-已锁定)")
-  private Byte lockedFlag;
-
-  /**
    * 注册时间
    */
   @ApiModelProperty(value = "注册时间")
   private LocalDateTime createTime;
 
   /**
+   * 锁定标识字段(0-未锁定 1-已锁定)
+   */
+  @ApiModelProperty(value = "锁定标识字段(0-未锁定 1-已锁定)")
+  private Byte lockedFlag;
+
+  /**
    * 手机号码
    */
   @ApiModelProperty(value = "手机号码")
   private String phone;
+
+  /**
+   * 头像
+   */
+  @ApiModelProperty(value = "头像")
+  private String avatarUrl;
+
+  @ApiModelProperty(value = "")
+  private String city;
+
+  @ApiModelProperty(value = "")
+  private String province;
+
+  @ApiModelProperty(value = "")
+  private String area;
+
+  /**
+   * 接收人
+   */
+  @ApiModelProperty(value = "接收人")
+  private String receiver;
 
   private static final long serialVersionUID = 1L;
 }

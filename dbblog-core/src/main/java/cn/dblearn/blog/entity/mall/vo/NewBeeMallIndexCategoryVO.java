@@ -9,7 +9,7 @@ import java.util.List;
  * 首页分类数据VO
  */
 public class NewBeeMallIndexCategoryVO implements Serializable {
-    /**
+       /**
      * 分类id
      */
     @ApiModelProperty(value="分类id")

@@ -1,10 +1,14 @@
 package cn.dblearn.blog.entity.mall.vo;
 
+import lombok.Data;
+
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  * 搜索列表页商品VO
  */
+@Data
 public class NewBeeMallSearchGoodsVO implements Serializable {
 
     private Long goodsId;
@@ -15,7 +19,7 @@ public class NewBeeMallSearchGoodsVO implements Serializable {
 
     private String goodsCoverImg;
 
-    private Integer sellingPrice;
+    private BigDecimal sellingPrice;
 
     public Long getGoodsId() {
         return goodsId;
@@ -49,11 +53,5 @@ public class NewBeeMallSearchGoodsVO implements Serializable {
         this.goodsCoverImg = goodsCoverImg;
     }
 
-    public Integer getSellingPrice() {
-        return sellingPrice;
-    }
 
-    public void setSellingPrice(Integer sellingPrice) {
-        this.sellingPrice = sellingPrice;
-    }
 }

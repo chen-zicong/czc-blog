@@ -3,6 +3,7 @@ package cn.dblearn.blog.portal.mall.service;
 import cn.dblearn.blog.common.util.util.PageQueryUtil;
 import cn.dblearn.blog.common.util.util.PageResult;
 import cn.dblearn.blog.entity.mall.MallOrder;
+import cn.dblearn.blog.entity.mall.MallUser;
 import cn.dblearn.blog.entity.mall.vo.NewBeeMallOrderDetailVO;
 import cn.dblearn.blog.entity.mall.vo.NewBeeMallShoppingCartItemVO;
 import cn.dblearn.blog.entity.mall.vo.NewBeeMallUserVO;
@@ -53,7 +54,7 @@ public interface MallOrderService {
    * @param myShoppingCartItems
    * @return
    */
-  String saveOrder(NewBeeMallUserVO user, List<NewBeeMallShoppingCartItemVO> myShoppingCartItems);
+  String saveOrder(MallUser user, List<NewBeeMallShoppingCartItemVO> myShoppingCartItems);
 
   /**
    * 确认收货

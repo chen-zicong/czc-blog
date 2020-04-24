@@ -11,14 +11,19 @@
     <result column="introduce_sign" jdbcType="VARCHAR" property="introduceSign" />
     <result column="address" jdbcType="VARCHAR" property="address" />
     <result column="is_deleted" jdbcType="TINYINT" property="isDeleted" />
-    <result column="locked_flag" jdbcType="TINYINT" property="lockedFlag" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="locked_flag" jdbcType="TINYINT" property="lockedFlag" />
     <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="avatar_url" jdbcType="VARCHAR" property="avatarUrl" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="province" jdbcType="VARCHAR" property="province" />
+    <result column="area" jdbcType="VARCHAR" property="area" />
+    <result column="receiver" jdbcType="VARCHAR" property="receiver" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
     user_id, nick_name, login_name, password_md5, introduce_sign, address, is_deleted, 
-    locked_flag, create_time, phone
+    create_time, locked_flag, phone, avatar_url, city, province, area, receiver
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     <!--@mbg.generated-->
@@ -36,12 +41,16 @@
     <!--@mbg.generated-->
     insert into mall_user (user_id, nick_name, login_name, 
       password_md5, introduce_sign, address, 
-      is_deleted, locked_flag, create_time, 
-      phone)
+      is_deleted, create_time, locked_flag, 
+      phone, avatar_url, city, 
+      province, area, receiver
+      )
     values (#{userId,jdbcType=BIGINT}, #{nickName,jdbcType=VARCHAR}, #{loginName,jdbcType=VARCHAR}, 
       #{passwordMd5,jdbcType=VARCHAR}, #{introduceSign,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
-      #{isDeleted,jdbcType=TINYINT}, #{lockedFlag,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{phone,jdbcType=VARCHAR})
+      #{isDeleted,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, #{lockedFlag,jdbcType=TINYINT}, 
+      #{phone,jdbcType=VARCHAR}, #{avatarUrl,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, 
+      #{province,jdbcType=VARCHAR}, #{area,jdbcType=VARCHAR}, #{receiver,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="cn.dblearn.blog.entity.mall.MallUser">
     <!--@mbg.generated-->
@@ -68,14 +77,29 @@
       <if test="isDeleted != null">
         is_deleted,
       </if>
-      <if test="lockedFlag != null">
-        locked_flag,
-      </if>
       <if test="createTime != null">
         create_time,
       </if>
+      <if test="lockedFlag != null">
+        locked_flag,
+      </if>
       <if test="phone != null">
         phone,
+      </if>
+      <if test="avatarUrl != null">
+        avatar_url,
+      </if>
+      <if test="city != null">
+        city,
+      </if>
+      <if test="province != null">
+        province,
+      </if>
+      <if test="area != null">
+        area,
+      </if>
+      <if test="receiver != null">
+        receiver,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -100,14 +124,29 @@
       <if test="isDeleted != null">
         #{isDeleted,jdbcType=TINYINT},
       </if>
-      <if test="lockedFlag != null">
-        #{lockedFlag,jdbcType=TINYINT},
-      </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="lockedFlag != null">
+        #{lockedFlag,jdbcType=TINYINT},
+      </if>
       <if test="phone != null">
         #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="avatarUrl != null">
+        #{avatarUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null">
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null">
+        #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="area != null">
+        #{area,jdbcType=VARCHAR},
+      </if>
+      <if test="receiver != null">
+        #{receiver,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -133,14 +172,29 @@
       <if test="isDeleted != null">
         is_deleted = #{isDeleted,jdbcType=TINYINT},
       </if>
-      <if test="lockedFlag != null">
-        locked_flag = #{lockedFlag,jdbcType=TINYINT},
-      </if>
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="lockedFlag != null">
+        locked_flag = #{lockedFlag,jdbcType=TINYINT},
+      </if>
       <if test="phone != null">
         phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="avatarUrl != null">
+        avatar_url = #{avatarUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null">
+        city = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null">
+        province = #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="area != null">
+        area = #{area,jdbcType=VARCHAR},
+      </if>
+      <if test="receiver != null">
+        receiver = #{receiver,jdbcType=VARCHAR},
       </if>
     </set>
     where user_id = #{userId,jdbcType=BIGINT}
@@ -154,9 +208,14 @@
       introduce_sign = #{introduceSign,jdbcType=VARCHAR},
       address = #{address,jdbcType=VARCHAR},
       is_deleted = #{isDeleted,jdbcType=TINYINT},
-      locked_flag = #{lockedFlag,jdbcType=TINYINT},
       create_time = #{createTime,jdbcType=TIMESTAMP},
-      phone = #{phone,jdbcType=VARCHAR}
+      locked_flag = #{lockedFlag,jdbcType=TINYINT},
+      phone = #{phone,jdbcType=VARCHAR},
+      avatar_url = #{avatarUrl,jdbcType=VARCHAR},
+      city = #{city,jdbcType=VARCHAR},
+      province = #{province,jdbcType=VARCHAR},
+      area = #{area,jdbcType=VARCHAR},
+      receiver = #{receiver,jdbcType=VARCHAR}
     where user_id = #{userId,jdbcType=BIGINT}
   </update>
   <select id="findMallUserList" parameterType="Map" resultMap="BaseResultMap">

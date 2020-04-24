@@ -302,6 +302,11 @@
           <!-- 按照售价从小到大排列 -->
           order by selling_price asc
         </when>
+
+        <when test="orderBy == 'price-desc'">
+          <!-- 按照售价从小到大排列 -->
+          order by selling_price desc
+        </when>
         <otherwise>
           <!-- 默认按照库存数量从大到小排列 -->
           order by stock_num desc

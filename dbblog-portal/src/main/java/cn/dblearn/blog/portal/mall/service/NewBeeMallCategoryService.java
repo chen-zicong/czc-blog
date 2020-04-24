@@ -2,9 +2,7 @@ package cn.dblearn.blog.portal.mall.service;
 
 
 
-import cn.dblearn.blog.common.util.util.PageQueryUtil;
-import cn.dblearn.blog.common.util.util.PageResult;
-import cn.dblearn.blog.entity.mall.GoodsCategory;
+
 import cn.dblearn.blog.entity.mall.vo.NewBeeMallIndexCategoryVO;
 import cn.dblearn.blog.entity.mall.vo.SearchPageCategoryVO;
 

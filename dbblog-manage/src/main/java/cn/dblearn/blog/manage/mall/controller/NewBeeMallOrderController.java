@@ -8,6 +8,10 @@ import cn.dblearn.blog.common.util.util.ResultGenerator;
 import cn.dblearn.blog.entity.mall.MallOrder;
 import cn.dblearn.blog.entity.mall.vo.NewBeeMallOrderItemVO;
 import cn.dblearn.blog.manage.mall.service.BackMallOrderService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -20,30 +24,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-/**
- * @author 13
- * @qq交流群 796794009
- * @email 2449207463@qq.com
- * @link https://github.com/newbee-ltd
- */
 @Controller
-@RequestMapping("/admin")
+@RequestMapping("mall/admin")
+@Api(tags = "后台订单管理")
 public class NewBeeMallOrderController {
 
     @Resource
     private BackMallOrderService newBeeMallOrderService;
 
-    @GetMapping("/orders")
-    public String ordersPage(HttpServletRequest request) {
-        request.setAttribute("path", "orders");
-        return "admin/newbee_mall_order";
-    }
 
     /**
      * 列表
      */
     @RequestMapping(value = "/orders/list", method = RequestMethod.GET)
     @ResponseBody
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "page", value = "当前页", paramType = "query", dataType = "int"),
+            @ApiImplicitParam(name = "limit", value = "页面大小", paramType = "query", dataType = "int"),
+    })
+    @ApiOperation("列表")
     public Result list(@RequestParam Map<String, Object> params) {
         if (StringUtils.isEmpty(params.get("page")) || StringUtils.isEmpty(params.get("limit"))) {
             return ResultGenerator.genFailResult("参数异常！");
@@ -57,6 +56,7 @@ public class NewBeeMallOrderController {
      */
     @RequestMapping(value = "/orders/update", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation("修改")
     public Result update(@RequestBody MallOrder mallOrder) {
         if (Objects.isNull(mallOrder.getTotalPrice())
                 || Objects.isNull(mallOrder.getOrderId())
@@ -78,6 +78,7 @@ public class NewBeeMallOrderController {
      */
     @GetMapping("/order-items/{id}")
     @ResponseBody
+    @ApiOperation("详情")
     public Result info(@PathVariable("id") Long id) {
         List<NewBeeMallOrderItemVO> orderItems = newBeeMallOrderService.getOrderItems(id);
         if (!CollectionUtils.isEmpty(orderItems)) {
@@ -91,6 +92,7 @@ public class NewBeeMallOrderController {
      */
     @RequestMapping(value = "/orders/checkDone", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation("配货")
     public Result checkDone(@RequestBody Long[] ids) {
         if (ids.length < 1) {
             return ResultGenerator.genFailResult("参数异常！");
@@ -108,6 +110,7 @@ public class NewBeeMallOrderController {
      */
     @RequestMapping(value = "/orders/checkOut", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation("出库")
     public Result checkOut(@RequestBody Long[] ids) {
         if (ids.length < 1) {
             return ResultGenerator.genFailResult("参数异常！");
@@ -125,6 +128,7 @@ public class NewBeeMallOrderController {
      */
     @RequestMapping(value = "/orders/close", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation("关闭订单")
     public Result closeOrder(@RequestBody Long[] ids) {
         if (ids.length < 1) {
             return ResultGenerator.genFailResult("参数异常！");

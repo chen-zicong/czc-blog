@@ -18,8 +18,7 @@ import java.util.List;
 public class IndexVo {
 
   List<NewBeeMallIndexCarouselVO> carousels;
-  List<NewBeeMallIndexConfigGoodsVO> hotGoodses;
-  List<NewBeeMallIndexConfigGoodsVO> newGoodses ;
-  List<NewBeeMallIndexConfigGoodsVO> recommendGoodses;
+  List<CategoryWithGoods> categoryWithGoods;
   List<NewBeeMallIndexCategoryVO> categories;
+
 }

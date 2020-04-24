@@ -8,6 +8,8 @@ import cn.dblearn.blog.common.util.util.ResultGenerator;
 
 import cn.dblearn.blog.entity.mall.GoodsCategory;
 import cn.dblearn.blog.manage.mall.service.BackMallCategoryService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -24,23 +26,14 @@ import java.util.*;
  * @link https://github.com/newbee-ltd
  */
 @Controller
-@RequestMapping("/admin")
+@RequestMapping("/mall/admin")
+@Api(tags = "后台分类")
 public class NewBeeMallGoodsCategoryController {
 
     @Resource
     private BackMallCategoryService newBeeMallCategoryService;
 
-    @GetMapping("/categories")
-    public String categoriesPage(HttpServletRequest request, @RequestParam("categoryLevel") Byte categoryLevel, @RequestParam("parentId") Long parentId, @RequestParam("backParentId") Long backParentId) {
-        if (categoryLevel == null || categoryLevel < 1 || categoryLevel > 3) {
-            return "error/error_5xx";
-        }
-        request.setAttribute("path", "newbee_mall_category");
-        request.setAttribute("parentId", parentId);
-        request.setAttribute("backParentId", backParentId);
-        request.setAttribute("categoryLevel", categoryLevel);
-        return "admin/newbee_mall_category";
-    }
+
 
     /**
      * 列表

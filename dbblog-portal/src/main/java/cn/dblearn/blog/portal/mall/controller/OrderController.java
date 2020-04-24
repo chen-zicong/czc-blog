@@ -1,6 +1,7 @@
 package cn.dblearn.blog.portal.mall.controller;
 
 
+import cn.dblearn.blog.auth.controller.BaseController;
 import cn.dblearn.blog.common.mall.Constants;
 import cn.dblearn.blog.common.mall.NewBeeMallException;
 import cn.dblearn.blog.common.mall.ServiceResultEnum;
@@ -8,6 +9,7 @@ import cn.dblearn.blog.common.util.util.PageQueryUtil;
 import cn.dblearn.blog.common.util.util.Result;
 import cn.dblearn.blog.common.util.util.ResultGenerator;
 import cn.dblearn.blog.entity.mall.MallOrder;
+import cn.dblearn.blog.entity.mall.MallUser;
 import cn.dblearn.blog.entity.mall.vo.NewBeeMallOrderDetailVO;
 import cn.dblearn.blog.entity.mall.vo.NewBeeMallShoppingCartItemVO;
 import cn.dblearn.blog.entity.mall.vo.NewBeeMallUserVO;
@@ -27,7 +29,7 @@ import java.util.Map;
 
 @RestController
 @Api(tags = "订单相关接口")
-public class OrderController {
+public class OrderController  extends BaseController {
 
     @Resource
     private NewBeeMallShoppingCartService newBeeMallShoppingCartService;
@@ -66,7 +68,7 @@ public class OrderController {
     @GetMapping("/saveOrder")
     @ApiOperation("生成订单")
     public Result<String> saveOrder(HttpSession httpSession) {
-        NewBeeMallUserVO user = (NewBeeMallUserVO) httpSession.getAttribute(Constants.MALL_USER_SESSION_KEY);
+        MallUser user = getUser();
         List<NewBeeMallShoppingCartItemVO> myShoppingCartItems = newBeeMallShoppingCartService.getMyShoppingCartItems(user.getUserId());
         if (StringUtils.isEmpty(user.getAddress().trim())) {
             //无收货地址
@@ -85,7 +87,7 @@ public class OrderController {
     @PutMapping("/orders/{orderNo}/cancel")
     @ApiOperation("取消订单")
     public Result cancelOrder(@PathVariable("orderNo") String orderNo, HttpSession httpSession) {
-        NewBeeMallUserVO user = (NewBeeMallUserVO) httpSession.getAttribute(Constants.MALL_USER_SESSION_KEY);
+        MallUser user = getUser();
         String cancelOrderResult = mallOrderService.cancelOrder(orderNo, user.getUserId());
         if (ServiceResultEnum.SUCCESS.getResult().equals(cancelOrderResult)) {
             return ResultGenerator.genSuccessResult();
@@ -95,10 +97,10 @@ public class OrderController {
     }
 
     @PutMapping("/orders/{orderNo}/finish")
-    @ApiOperation("交易成功")
+    @ApiOperation("收货成功")
     @ResponseBody
     public Result finishOrder(@PathVariable("orderNo") String orderNo, HttpSession httpSession) {
-        NewBeeMallUserVO user = (NewBeeMallUserVO) httpSession.getAttribute(Constants.MALL_USER_SESSION_KEY);
+        MallUser user = getUser();
         String finishOrderResult = mallOrderService.finishOrder(orderNo, user.getUserId());
         if (ServiceResultEnum.SUCCESS.getResult().equals(finishOrderResult)) {
             return ResultGenerator.genSuccessResult();
@@ -109,7 +111,7 @@ public class OrderController {
 
     @GetMapping("/selectPayType")
     public String selectPayType(HttpServletRequest request, @RequestParam("orderNo") String orderNo, HttpSession httpSession) {
-        NewBeeMallUserVO user = (NewBeeMallUserVO) httpSession.getAttribute(Constants.MALL_USER_SESSION_KEY);
+        MallUser user = getUser();
         MallOrder mallOrder = mallOrderService.getNewBeeMallOrderByOrderNo(orderNo);
         //todo 判断订单userId
         //todo 判断订单状态
@@ -135,6 +137,7 @@ public class OrderController {
 
     @GetMapping("/paySuccess")
     @ResponseBody
+    @ApiOperation("支付")
     public Result paySuccess(@RequestParam("orderNo") String orderNo, @RequestParam("payType") int payType) {
         String payResult = mallOrderService.paySuccess(orderNo, payType);
         if (ServiceResultEnum.SUCCESS.getResult().equals(payResult)) {

@@ -4,16 +4,15 @@ package cn.dblearn.blog.portal.mall.controller;
 import cn.dblearn.blog.common.mall.Constants;
 import cn.dblearn.blog.common.mall.NewBeeMallException;
 import cn.dblearn.blog.common.mall.ServiceResultEnum;
-import cn.dblearn.blog.common.util.util.BeanUtil;
-import cn.dblearn.blog.common.util.util.PageQueryUtil;
-import cn.dblearn.blog.common.util.util.Result;
-import cn.dblearn.blog.common.util.util.ResultGenerator;
+import cn.dblearn.blog.common.util.util.*;
 import cn.dblearn.blog.entity.mall.MallGoods;
 import cn.dblearn.blog.entity.mall.vo.NewBeeMallGoodsDetailVO;
 import cn.dblearn.blog.entity.mall.vo.SearchPageCategoryVO;
 import cn.dblearn.blog.portal.mall.service.NewBeeMallCategoryService;
 import cn.dblearn.blog.portal.mall.service.MallGoodsService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -30,64 +29,61 @@ import java.util.Map;
 @Api(tags = "商品")
 public class GoodsController {
 
-    @Resource
-    private MallGoodsService mallGoodsService;
-    @Resource
-    private NewBeeMallCategoryService newBeeMallCategoryService;
+  @Resource
+  private MallGoodsService mallGoodsService;
+  @Resource
+  private NewBeeMallCategoryService newBeeMallCategoryService;
 
-    @GetMapping({"/search", "/search.html"})
-    public String searchPage(@RequestParam Map<String, Object> params, HttpServletRequest request) {
-        if (StringUtils.isEmpty(params.get("page"))) {
-            params.put("page", 1);
-        }
-        params.put("limit", Constants.GOODS_SEARCH_PAGE_LIMIT);
-        //封装分类数据
-        if (params.containsKey("goodsCategoryId") && !StringUtils.isEmpty(params.get("goodsCategoryId") + "")) {
-            Long categoryId = Long.valueOf(params.get("goodsCategoryId") + "");
-            SearchPageCategoryVO searchPageCategoryVO = newBeeMallCategoryService.getCategoriesForSearch(categoryId);
-            if (searchPageCategoryVO != null) {
-                request.setAttribute("goodsCategoryId", categoryId);
-                request.setAttribute("searchPageCategoryVO", searchPageCategoryVO);
-            }
-        }
-        //封装参数供前端回显
-        if (params.containsKey("orderBy") && !StringUtils.isEmpty(params.get("orderBy") + "")) {
-            request.setAttribute("orderBy", params.get("orderBy") + "");
-        }
-        String keyword = "";
-        //对keyword做过滤 去掉空格
-        if (params.containsKey("keyword") && !StringUtils.isEmpty((params.get("keyword") + "").trim())) {
-            keyword = params.get("keyword") + "";
-        }
-        request.setAttribute("keyword", keyword);
-        params.put("keyword", keyword);
-        //封装商品数据
-        PageQueryUtil pageUtil = new PageQueryUtil(params);
-        request.setAttribute("pageResult", mallGoodsService.searchNewBeeMallGoods(pageUtil));
-        return "mall/search";
+  @GetMapping("/search")
+  @ApiOperation("搜索")
+  @ResponseBody
+  @ApiImplicitParams({
+          @ApiImplicitParam(name = "categoryId", value = "分类id", paramType = "query", dataType = "int"),
+          @ApiImplicitParam(name = "page", value = "当前页", paramType = "query", dataType = "int"),
+          @ApiImplicitParam(name = "limit", value = "页面大小", paramType = "query", dataType = "int"),
+  })
+  public Result searchPage( Map<String, Object> params, HttpServletRequest request) {
+    if (StringUtils.isEmpty(params.get("page"))) {
+      params.put("page", 1);
+    }
+    params.put("limit", Constants.GOODS_SEARCH_PAGE_LIMIT);
+    //封装分类数据
+    if (params.containsKey("goodsCategoryId") && !StringUtils.isEmpty(params.get("goodsCategoryId") + "")) {
+      Long categoryId = Long.valueOf(params.get("goodsCategoryId") + "");
+      SearchPageCategoryVO searchPageCategoryVO = newBeeMallCategoryService.getCategoriesForSearch(categoryId);
+      if (searchPageCategoryVO != null) {
+        request.setAttribute("goodsCategoryId", categoryId);
+        request.setAttribute("searchPageCategoryVO", searchPageCategoryVO);
+      }
     }
 
-    @GetMapping("/goods/detail/{goodsId}")
-    @ResponseBody
-    @ApiOperation(value = "商品详情")
-    public Result<NewBeeMallGoodsDetailVO> detailPage(@PathVariable("goodsId") Long goodsId, HttpServletRequest request) {
-        if (goodsId < 1) {
-           return ResultGenerator.genFailResult("无数据");
-        }
-        MallGoods goods = mallGoodsService.getNewBeeMallGoodsById(goodsId);
-        if (goods == null) {
-            NewBeeMallException.fail(ServiceResultEnum.GOODS_NOT_EXIST.getResult());
-        }
-        if (Constants.SELL_STATUS_UP != goods.getGoodsSellStatus()){
-            NewBeeMallException.fail(ServiceResultEnum.GOODS_PUT_DOWN.getResult());
-        }
-        NewBeeMallGoodsDetailVO goodsDetailVO = new NewBeeMallGoodsDetailVO();
-        BeanUtil.copyProperties(goods, goodsDetailVO);
-        goodsDetailVO.setOriginalPrice(goods.getOriginalPrice().toString());
-        goodsDetailVO.setSellingPrice(goods.getSellingPrice().toString());
-        goodsDetailVO.setGoodsCarouselList(goods.getGoodsCarousel().split(","));
+    //封装商品数据
+    PageQueryUtil pageUtil = new PageQueryUtil(params);
+    PageResult pageResult = mallGoodsService.searchNewBeeMallGoods(pageUtil);
+    return ResultGenerator.genSuccessResult(pageResult);
+  }
 
-        return ResultGenerator.genSuccessResult(goodsDetailVO);
+  @GetMapping("/goods/detail/{goodsId}")
+  @ResponseBody
+  @ApiOperation(value = "商品详情")
+  public Result<NewBeeMallGoodsDetailVO> detailPage(@PathVariable("goodsId") Long goodsId, HttpServletRequest request) {
+    if (goodsId < 1) {
+      return ResultGenerator.genFailResult("无数据");
     }
+    MallGoods goods = mallGoodsService.getNewBeeMallGoodsById(goodsId);
+    if (goods == null) {
+      NewBeeMallException.fail(ServiceResultEnum.GOODS_NOT_EXIST.getResult());
+    }
+    if (Constants.SELL_STATUS_UP != goods.getGoodsSellStatus()) {
+      NewBeeMallException.fail(ServiceResultEnum.GOODS_PUT_DOWN.getResult());
+    }
+    NewBeeMallGoodsDetailVO goodsDetailVO = new NewBeeMallGoodsDetailVO();
+    BeanUtil.copyProperties(goods, goodsDetailVO);
+    goodsDetailVO.setOriginalPrice(goods.getOriginalPrice().toString());
+    goodsDetailVO.setSellingPrice(goods.getSellingPrice().toString());
+    goodsDetailVO.setGoodsCarouselList(goods.getGoodsCarousel().split(","));
+
+    return ResultGenerator.genSuccessResult(goodsDetailVO);
+  }
 
 }

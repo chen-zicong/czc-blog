@@ -10,10 +10,13 @@
 
 <body>
 登陆中...
+<h1>${tokenInfo}</h1>
 <script>
     window.onload = function () {
-        window.opener.postMessage("bearer ${token }", "hhhh");
-        window.close();
+
+        window.opener.postMessage('${tokenInfo}',"http://localhost:8002");
+        //window.opener.postMessage('${tokenInfo}',"http://127.0.0.1:5500/src/styles/index.html");
+        window.close()
     }
 </script>
 </body>
